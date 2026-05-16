@@ -5,7 +5,7 @@
 **Team Number:** Team no. 6
 
 ### 👥 Team Members & Contributions:
-* **Sultan Hisham Al-Foraihi ** - Database Design, Capacity Pre-Check Logic, Notification Engine
+* **Sultan Hisham Al-Foraihi** - Database Design, Capacity Pre-Check Logic, Notification Engine
 * **Marwan Ali Alwadeey** - Real-time Seat Locking, Route Management & UI Optimization
 * **Mehdi Karim Alanzi** - Search Interface, Passenger Pricing, Capacity Validation
 * **Mohammed Fahed Azzumeea** - History Archive, Operational Audit Logs, Document Integration
