@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RailWay SA — Dashboard</title>
+<script>var PAGE_ROLES=["admin","staff"];</script>
+<script src="auth.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root{--c-green:#006633;--c-green-dark:#004D26;--c-green-mid:#00853D;--c-green-light:#CCE8D9;--c-green-pale:#EFF7F2;--c-gold:#C9A84C;--c-gold-dark:#9E7B1E;--c-gold-light:#F5E9C6;--bg:#F2F5F3;--surface:#FFFFFF;--surface-raised:#F8FBF9;--border:#D8E5DD;--text-primary:#112218;--text-secondary:#4A6858;--text-muted:#7A9888;--shadow:0 2px 12px rgba(0,102,51,0.08);--shadow-md:0 4px 24px rgba(0,102,51,0.12);--radius:14px;--sidebar-w:260px;--sidebar-bg:#004D26;--sidebar-text:rgba(255,255,255,0.8);--sidebar-hover:rgba(255,255,255,0.07);--sidebar-active-bg:rgba(201,168,76,0.18);--sidebar-active-text:#C9A84C;}
+[data-theme="dark"]{--bg:#0A1610;--surface:#142218;--surface-raised:#1C2E20;--border:#2A4030;--text-primary:#E0EFE6;--text-secondary:#8AB898;--text-muted:#5A7A68;--shadow:0 2px 12px rgba(0,0,0,0.3);--shadow-md:0 4px 24px rgba(0,0,0,0.4);--sidebar-bg:#0A1610;--sidebar-hover:rgba(255,255,255,0.05);--sidebar-active-bg:rgba(201,168,76,0.12);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit','Tajawal',sans-serif;background:var(--bg);color:var(--text-primary);display:flex;min-height:100vh;transition:background 0.3s,color 0.3s;}
+[dir="rtl"]{font-family:'Tajawal','Outfit',sans-serif;}
+.sidebar{width:var(--sidebar-w);min-height:100vh;background:var(--sidebar-bg);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:200;}
+[dir="rtl"] .sidebar{left:auto;right:0;}
+.sidebar-brand{padding:28px 24px 20px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.brand-row{display:flex;align-items:center;gap:12px;}
+.brand-icon{width:42px;height:42px;background:var(--c-gold);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.brand-text h2{font-size:18px;font-weight:800;color:#fff;}
+.brand-text p{font-size:11px;color:rgba(255,255,255,0.5);}
+.nav-section{padding:16px 12px 8px;flex:1;overflow-y:auto;}
+.nav-label{font-size:10px;font-weight:700;color:rgba(255,255,255,0.35);letter-spacing:1px;text-transform:uppercase;padding:0 12px;margin-bottom:6px;margin-top:16px;}
+.nav-item{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;cursor:pointer;transition:all 0.2s;text-decoration:none;color:var(--sidebar-text);font-size:14px;font-weight:500;margin-bottom:2px;}
+.nav-item:hover{background:var(--sidebar-hover);color:#fff;}
+.nav-item.active{background:var(--sidebar-active-bg);color:var(--sidebar-active-text);font-weight:700;}
+.nav-icon{font-size:18px;width:24px;text-align:center;}
+.sidebar-footer{padding:16px 12px;border-top:1px solid rgba(255,255,255,0.08);}
+.user-card{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;}
+.user-card:hover{background:var(--sidebar-hover);}
+.user-avatar{width:36px;height:36px;background:var(--c-gold);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0;}
+.user-info{flex:1;overflow:hidden;}
+.user-name{font-size:13px;font-weight:700;color:#fff;}
+.user-role{font-size:11px;color:rgba(255,255,255,0.45);}
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;}
+[dir="rtl"] .main{margin-left:0;margin-right:var(--sidebar-w);}
+.topbar{height:68px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 32px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow);}
+.page-title{font-size:20px;font-weight:800;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.tb-btn{background:var(--surface-raised);border:1px solid var(--border);border-radius:9px;padding:8px 14px;font-size:13px;font-weight:600;color:var(--text-secondary);cursor:pointer;font-family:inherit;transition:all 0.2s;}
+.tb-btn:hover{border-color:var(--c-green);color:var(--c-green);}
+.content{padding:32px;flex:1;}
+
+/* KPI Row */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:28px;}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+.kpi::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;border-radius:4px 0 0 4px;}
+.kpi.green::before{background:var(--c-green);}
+.kpi.gold::before{background:var(--c-gold);}
+.kpi.blue::before{background:#2980B9;}
+.kpi.red::before{background:#C0392B;}
+.kpi-icon{font-size:24px;margin-bottom:12px;}
+.kpi-value{font-size:30px;font-weight:800;letter-spacing:-1px;}
+.kpi-label{font-size:12px;color:var(--text-muted);margin-top:4px;font-weight:500;}
+.kpi-change{position:absolute;top:16px;right:16px;font-size:12px;font-weight:700;padding:3px 8px;border-radius:20px;}
+[dir="rtl"] .kpi-change{right:auto;left:16px;}
+.up{background:#E8F5EE;color:#1A8A4A;}
+.dn{background:#FDE8E8;color:#C0392B;}
+[data-theme="dark"] .up{background:rgba(26,138,74,0.2);}
+[data-theme="dark"] .dn{background:rgba(192,57,43,0.2);}
+
+/* Charts */
+.charts-row{display:grid;grid-template-columns:2fr 1fr;gap:24px;margin-bottom:28px;}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);}
+.chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.chart-title{font-size:15px;font-weight:700;}
+.chart-period{display:flex;gap:4px;}
+.period-btn{background:transparent;border:1px solid var(--border);border-radius:7px;padding:5px 12px;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;font-family:inherit;transition:all 0.2s;}
+.period-btn.active{background:var(--c-green);color:#fff;border-color:var(--c-green);}
+.chart-wrap{position:relative;}
+
+/* Route Performance */
+.route-table-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);margin-bottom:28px;}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.section-title{font-size:15px;font-weight:700;}
+table{width:100%;border-collapse:collapse;}
+th{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);}
+[dir="rtl"] th{text-align:right;}
+td{font-size:14px;padding:13px 12px;border-bottom:1px solid var(--border);color:var(--text-primary);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--surface-raised);}
+.badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.badge-high{background:#E8F5EE;color:#1A8A4A;}
+.badge-med{background:#FEF3E0;color:#B8681A;}
+.badge-low{background:#FDE8E8;color:#C0392B;}
+[data-theme="dark"] .badge-high{background:rgba(26,138,74,0.2);}
+[data-theme="dark"] .badge-med{background:rgba(184,104,26,0.2);}
+[data-theme="dark"] .badge-low{background:rgba(192,57,43,0.2);}
+.progress-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;width:80px;}
+.progress-fill{height:100%;border-radius:3px;background:var(--c-green);transition:width 0.5s;}
+
+/* Bottom Row */
+.bottom-row{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.mini-stat-list .item{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);}
+.mini-stat-list .item:last-child{border-bottom:none;}
+.item-left{display:flex;align-items:center;gap:10px;}
+.item-icon{width:36px;height:36px;border-radius:10px;background:var(--c-green-pale);display:flex;align-items:center;justify-content:center;font-size:16px;}
+[data-theme="dark"] .item-icon{background:rgba(0,102,51,0.2);}
+.item-label{font-size:13px;font-weight:600;}
+.item-sub{font-size:11px;color:var(--text-muted);}
+.item-value{font-size:16px;font-weight:800;color:var(--c-green);}
+
+@media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(2,1fr);}.charts-row{grid-template-columns:1fr;}.bottom-row{grid-template-columns:1fr;}}
+
+/* Sidebar icon-only brand */
+.sb{width:var(--sidebar-w,260px);min-height:100vh;background:var(--sidebar-bg,#004D26);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:200;}
+[dir="rtl"] .sb{left:auto;right:0;}
+.sb-brand{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;}
+.sb-ic{width:38px;height:38px;background:#C9A84C;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.sb-nav{padding:12px 8px 8px;flex:1;overflow-y:auto;}
+.sbl{font-size:10px;font-weight:700;color:rgba(255,255,255,.30);letter-spacing:1px;text-transform:uppercase;padding:0 12px;margin:12px 0 4px;}
+.sbi{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;cursor:pointer;transition:all .2s;text-decoration:none;color:rgba(255,255,255,.78);font-size:13px;font-weight:500;margin-bottom:1px;}
+.sbi:hover{background:rgba(255,255,255,.07);color:#fff;}
+.sbi.active{background:rgba(201,168,76,.18);color:#C9A84C;font-weight:700;}
+.sbi-ic{font-size:16px;width:20px;text-align:center;}
+.sb-foot{padding:12px 8px;border-top:1px solid rgba(255,255,255,.08);}
+.sb-user{display:flex;align-items:center;gap:9px;padding:8px 12px;border-radius:9px;}
+.sb-av{width:32px;height:32px;background:#C9A84C;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;}
+.sb-uname{font-size:12px;font-weight:700;color:#fff;}
+.sb-urole{font-size:10px;color:rgba(255,255,255,.4);}
+
+</style>
+</head>
+<body>
+<nav class="sb">
+  <div class="sb-brand"><div class="sb-ic">🚆</div></div>
+  <div class="sb-nav" id="sidebar-nav-dyn"></div>
+  <div class="sb-foot">
+    <div class="sb-user">
+      <div class="sb-av" id="sb-av">A</div>
+      <div><div class="sb-uname" id="sb-name">Admin</div><div class="sb-urole" id="sb-role">Administrator</div></div>
+      <div style="color:rgba(255,255,255,0.32);font-size:14px;cursor:pointer;margin-left:auto;" onclick="rwLogout()">↩</div>
+    </div>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="topbar">
+    <div class="page-title" data-i18n="page-title">Analytics Dashboard</div>
+    <div class="topbar-right">
+      <button class="tb-btn" onclick="toggleLang()" id="lang-btn">عربي</button>
+      <button class="tb-btn" onclick="toggleTheme()" id="theme-btn">🌙</button>
+      <button class="tb-btn" onclick="rwLogout()">↩</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="kpi-grid">
+      <div class="kpi green"><span class="kpi-change up">+21%</span><div class="kpi-icon">💰</div><div class="kpi-value">SAR 5.4M</div><div class="kpi-label" data-i18n="kpi-revenue">Monthly Revenue</div></div>
+      <div class="kpi gold"><span class="kpi-change up">+8%</span><div class="kpi-icon">🎫</div><div class="kpi-value">84,230</div><div class="kpi-label" data-i18n="kpi-bookings">Total Bookings</div></div>
+      <div class="kpi blue"><span class="kpi-change dn">-3%</span><div class="kpi-icon">💺</div><div class="kpi-value">76.4%</div><div class="kpi-label" data-i18n="kpi-occupancy">Avg Occupancy</div></div>
+      <div class="kpi red"><span class="kpi-change up">+0.2%</span><div class="kpi-icon">⏱️</div><div class="kpi-value">99.7%</div><div class="kpi-label" data-i18n="kpi-uptime">System Uptime</div></div>
+    </div>
+
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title" data-i18n="chart-revenue">Revenue & Bookings Trend</div>
+          <div class="chart-period">
+            <button class="period-btn active" onclick="setPeriod('7d',this)">7D</button>
+            <button class="period-btn" onclick="setPeriod('30d',this)">30D</button>
+            <button class="period-btn" onclick="setPeriod('90d',this)">3M</button>
+          </div>
+        </div>
+        <div class="chart-wrap"><canvas id="revenueChart" height="220"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header"><div class="chart-title" data-i18n="chart-occupancy">Occupancy by Class</div></div>
+        <div class="chart-wrap"><canvas id="occupancyChart" height="220"></canvas></div>
+      </div>
+    </div>
+
+    <div class="route-table-card">
+      <div class="section-header">
+        <div class="section-title" data-i18n="route-performance">Route Performance</div>
+        <button class="tb-btn" onclick="exportData()" data-i18n="export">Export CSV</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th data-i18n="th-route">Route</th>
+            <th data-i18n="th-trips">Trips</th>
+            <th data-i18n="th-passengers">Passengers</th>
+            <th data-i18n="th-revenue">Revenue (SAR)</th>
+            <th data-i18n="th-load">Load Factor</th>
+            <th data-i18n="th-performance">Performance</th>
+          </tr>
+        </thead>
+        <tbody id="route-table-body"></tbody>
+      </table>
+    </div>
+
+    <div class="bottom-row">
+      <div class="chart-card">
+        <div class="chart-header"><div class="chart-title" data-i18n="chart-routes">Bookings by Route</div></div>
+        <canvas id="routeChart" height="200"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header"><div class="chart-title" data-i18n="top-stations">Top Stations</div></div>
+        <div class="mini-stat-list" id="station-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentLang = localStorage.getItem('rw-lang')||'en';
+let currentTheme = localStorage.getItem('rw-theme')||'light';
+let revenueChart, occupancyChart, routeChart;
+
+const i18n = {
+  en:{'nav-main':'Main','nav-home':'Home','nav-dashboard':'Dashboard','nav-ops':'Operations','nav-schedules':'Schedules','nav-routes':'Routes','nav-occupancy':'Occupancy','nav-passenger':'Passenger','nav-booking':'Book Ticket','nav-history':'History','nav-admin':'Admin','nav-users':'Users','page-title':'Analytics Dashboard','kpi-revenue':'Monthly Revenue','kpi-bookings':'Total Bookings','kpi-occupancy':'Avg Occupancy','kpi-uptime':'System Uptime','chart-revenue':'Revenue & Bookings Trend','chart-occupancy':'Occupancy by Class','route-performance':'Route Performance','export':'Export CSV','th-route':'Route','th-trips':'Trips','th-passengers':'Passengers','th-revenue':'Revenue (SAR)','th-load':'Load Factor','th-performance':'Performance','chart-routes':'Bookings by Route','top-stations':'Top Stations','lang-btn':'عربي'},
+  ar:{'nav-main':'الرئيسية','nav-home':'الرئيسية','nav-dashboard':'لوحة التحكم','nav-ops':'العمليات','nav-schedules':'الجداول','nav-routes':'المسارات','nav-occupancy':'الإشغال','nav-passenger':'الركاب','nav-booking':'حجز تذكرة','nav-history':'السجل','nav-admin':'الإدارة','nav-users':'المستخدمون','page-title':'لوحة التحليلات','kpi-revenue':'الإيرادات الشهرية','kpi-bookings':'إجمالي الحجوزات','kpi-occupancy':'متوسط الإشغال','kpi-uptime':'وقت تشغيل النظام','chart-revenue':'اتجاه الإيرادات والحجوزات','chart-occupancy':'الإشغال حسب الدرجة','route-performance':'أداء المسارات','export':'تصدير CSV','th-route':'المسار','th-trips':'الرحلات','th-passengers':'الركاب','th-revenue':'الإيرادات (ريال)','th-load':'معدل الإشغال','th-performance':'الأداء','chart-routes':'الحجوزات حسب المسار','top-stations':'أعلى المحطات','lang-btn':'English'}
+};
+
+const routes = [
+  {route:{en:'Riyadh → Jeddah',ar:'الرياض ← جدة'},trips:342,passengers:48230,revenue:'1,823,400',load:84,perf:'high'},
+  {route:{en:'Riyadh → Dammam',ar:'الرياض ← الدمام'},trips:285,passengers:31840,revenue:'892,340',load:72,perf:'high'},
+  {route:{en:'Jeddah → Makkah',ar:'جدة ← مكة'},trips:410,passengers:56120,revenue:'789,200',load:91,perf:'high'},
+  {route:{en:'Riyadh → Madinah',ar:'الرياض ← المدينة'},trips:198,passengers:22310,revenue:'1,243,600',load:68,perf:'med'},
+  {route:{en:'Dammam → Jubail',ar:'الدمام ← الجبيل'},trips:124,passengers:8940,revenue:'312,400',load:45,perf:'low'},
+];
+
+const stations = [
+  {icon:'🏙️',label:{en:'Riyadh Central',ar:'الرياض المركزية'},sub:{en:'Main hub',ar:'المحور الرئيسي'},value:'48.2K'},
+  {icon:'🌊',label:{en:'Jeddah North',ar:'جدة الشمالية'},sub:{en:'Coastal hub',ar:'المحور الساحلي'},value:'31.7K'},
+  {icon:'🕌',label:{en:'Makkah Station',ar:'محطة مكة'},sub:{en:'Pilgrimage hub',ar:'محور الحج'},value:'28.4K'},
+  {icon:'🌴',label:{en:'Madinah Station',ar:'محطة المدينة'},sub:{en:'Historic route',ar:'المسار التاريخي'},value:'22.1K'},
+  {icon:'⚓',label:{en:'Dammam Port',ar:'ميناء الدمام'},sub:{en:'Eastern hub',ar:'المحور الشرقي'},value:'14.8K'},
+];
+
+function getChartColors(){
+  const dark=currentTheme==='dark';
+  return {grid:dark?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.06)',text:dark?'#8AB898':'#4A6858'};
+}
+
+function buildRevenueChart(){
+  const ctx=document.getElementById('revenueChart').getContext('2d');
+  const labels=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const {grid,text}=getChartColors();
+  if(revenueChart)revenueChart.destroy();
+  revenueChart=new Chart(ctx,{type:'line',data:{labels,datasets:[{label:'Revenue (SAR)',data:[180000,220000,195000,310000,275000,340000,290000],borderColor:'#006633',backgroundColor:'rgba(0,102,51,0.1)',borderWidth:2.5,tension:0.4,fill:true,pointBackgroundColor:'#006633',pointRadius:4},{label:'Bookings',data:[1200,1450,1380,2100,1900,2300,1980],borderColor:'#C9A84C',backgroundColor:'rgba(201,168,76,0.08)',borderWidth:2.5,tension:0.4,fill:false,pointBackgroundColor:'#C9A84C',pointRadius:4,yAxisID:'y1'}]},options:{responsive:true,maintainAspectRatio:true,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{color:text,font:{size:12,weight:'600'}}}},scales:{y:{grid:{color:grid},ticks:{color:text,callback:v=>'SAR '+v.toLocaleString()}},y1:{position:'right',grid:{drawOnChartArea:false},ticks:{color:text}},x:{grid:{color:grid},ticks:{color:text}}}}});
+}
+
+function buildOccupancyChart(){
+  const ctx=document.getElementById('occupancyChart').getContext('2d');
+  if(occupancyChart)occupancyChart.destroy();
+  const {text}=getChartColors();
+  occupancyChart=new Chart(ctx,{type:'doughnut',data:{labels:currentLang==='ar'?['درجة أولى','درجة ثانية','طلابية']:['First Class','Economy','Student'],datasets:[{data:[82,76,91],backgroundColor:['#C9A84C','#006633','#00853D'],borderWidth:0,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:'bottom',labels:{color:text,padding:16,font:{size:12,weight:'600'}}}}}});
+}
+
+function buildRouteChart(){
+  const ctx=document.getElementById('routeChart').getContext('2d');
+  if(routeChart)routeChart.destroy();
+  const {grid,text}=getChartColors();
+  const l=currentLang;
+  routeChart=new Chart(ctx,{type:'bar',data:{labels:routes.map(r=>l==='ar'?r.route.ar.replace(' ← ',' ↔ '):r.route.en.replace(' → ',' ↔ ')),datasets:[{label:l==='ar'?'الحجوزات':'Bookings',data:routes.map(r=>r.passengers),backgroundColor:['#006633','#C9A84C','#00853D','#9E7B1E','#CCE8D9'],borderRadius:8}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false}},scales:{y:{grid:{color:grid},ticks:{color:text}},x:{grid:{display:false},ticks:{color:text,maxRotation:20}}}}});
+}
+
+function renderRouteTable(){
+  const l=currentLang;
+  document.getElementById('route-table-body').innerHTML=routes.map(r=>`
+    <tr>
+      <td><strong>${r.route[l]}</strong></td>
+      <td>${r.trips}</td>
+      <td>${r.passengers.toLocaleString()}</td>
+      <td>${r.revenue}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="progress-bar"><div class="progress-fill" style="width:${r.load}%"></div></div>
+          <span style="font-size:13px;font-weight:600;">${r.load}%</span>
+        </div>
+      </td>
+      <td><span class="badge badge-${r.perf}">${r.perf==='high'?(l==='ar'?'عالٍ':'High'):r.perf==='med'?(l==='ar'?'متوسط':'Medium'):(l==='ar'?'منخفض':'Low')}</span></td>
+    </tr>`).join('');
+}
+
+function renderStations(){
+  const l=currentLang;
+  document.getElementById('station-list').innerHTML=stations.map(s=>`
+    <div class="item">
+      <div class="item-left">
+        <div class="item-icon">${s.icon}</div>
+        <div><div class="item-label">${s.label[l]}</div><div class="item-sub">${s.sub[l]}</div></div>
+      </div>
+      <div class="item-value">${s.value}</div>
+    </div>`).join('');
+}
+
+function setPeriod(p,btn){
+  document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  buildRevenueChart();
+}
+
+function exportData(){alert(currentLang==='ar'?'جاري تصدير البيانات...':'Exporting data...');}
+
+function applyTheme(t){currentTheme=t;localStorage.setItem('rw-theme',t);document.documentElement.setAttribute('data-theme',t);document.getElementById('theme-btn').textContent=t==='dark'?'☀️':'🌙';buildRevenueChart();buildOccupancyChart();buildRouteChart();}
+function toggleTheme(){applyTheme(currentTheme==='light'?'dark':'light');}
+
+function applyLang(lang){
+  currentLang=lang;localStorage.setItem('rw-lang',lang);
+  document.documentElement.setAttribute('lang',lang);document.documentElement.setAttribute('dir',lang==='ar'?'rtl':'ltr');
+  document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');if(i18n[lang][k])el.textContent=i18n[lang][k];});
+  renderRouteTable();renderStations();buildOccupancyChart();buildRouteChart();
+}
+function toggleLang(){applyLang(currentLang==='en'?'ar':'en');}
+
+const user=JSON.parse(localStorage.getItem('rw-user')||'{"email":"admin@railwaysa.com","role":"admin"}');
+document.getElementById('user-avatar').textContent=user.email[0].toUpperCase();
+document.getElementById('user-name').textContent=user.email.split('@')[0];
+document.getElementById('user-role').textContent=user.role;
+
+applyTheme(currentTheme);
+applyLang(currentLang);
+buildRevenueChart();
+
+// Role guard — redirect if not admin or staff
+(function(){
+  const u = JSON.parse(localStorage.getItem('rw-user') || '{"role":"passenger"}');
+  if(u.role === 'passenger') window.location.href = 'home-passenger.html';
+  // Update Home link dynamically
+  const homeLinks = document.querySelectorAll('a[href="home-admin.html"]');
+  homeLinks.forEach(l => {
+    if(u.role === 'staff') l.href = 'home-staff.html';
+  });
+})();
+
+// Dynamic sidebar nav based on role
+(function(){
+  var u=window.RW_USER||{};
+  var el=document.getElementById('sidebar-nav-dyn');
+  if(!el)return;
+  if(u.role==='admin'){
+    el.innerHTML=`    <div class="sbl">Main</div>
+    <a href="home-admin.html" class="sbi" data-home-link><span class="sbi-ic">🏠</span><span>Home</span></a>
+    <a href="dashboard.html" class="sbi active"><span class="sbi-ic">📊</span><span>Dashboard</span></a>
+    <div class="sbl">Operations</div>
+    <a href="schedules.html" class="sbi "><span class="sbi-ic">📅</span><span>Schedules</span></a>
+    <a href="routes.html" class="sbi "><span class="sbi-ic">🗺️</span><span>Routes</span></a>
+    <a href="occupancy.html" class="sbi "><span class="sbi-ic">💺</span><span>Occupancy</span></a>
+    <div class="sbl">Management</div>
+    <a href="admin-bookings.html" class="sbi"><span class="sbi-ic">📋</span><span>Bookings</span></a>
+    <a href="users.html" class="sbi "><span class="sbi-ic">👥</span><span>Users</span></a>`;
+  }else{
+    el.innerHTML=`    <div class="sbl">Operations</div>
+    <a href="home-staff.html" class="sbi" data-home-link><span class="sbi-ic">🏠</span><span>Home</span></a>
+    <a href="schedules.html" class="sbi "><span class="sbi-ic">📅</span><span>Schedules</span></a>
+    <a href="occupancy.html" class="sbi "><span class="sbi-ic">💺</span><span>Occupancy</span></a>
+    <a href="admin-bookings.html" class="sbi"><span class="sbi-ic">📋</span><span>Bookings</span></a>`;
+  }
+})();
+</script>
+</body>
+</html>

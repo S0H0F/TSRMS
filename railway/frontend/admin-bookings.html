@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TSRMS — Booking Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<script>var PAGE_ROLES=['admin','staff'];</script>
+<script src="auth.js"></script>
+<style>
+:root{--c-green:#006633;--c-green-dark:#004D26;--c-green-mid:#00853D;--c-green-light:#CCE8D9;--c-green-pale:#EFF7F2;--c-gold:#C9A84C;--c-gold-light:#F5E9C6;--bg:#F2F5F3;--surface:#FFFFFF;--surface-raised:#F8FBF9;--border:#D8E5DD;--text-primary:#112218;--text-secondary:#4A6858;--text-muted:#7A9888;--shadow:0 2px 12px rgba(0,102,51,0.08);--shadow-md:0 4px 24px rgba(0,102,51,0.12);--radius:14px;--sw:260px;--sbg:#004D26;}
+[data-theme="dark"]{--bg:#0A1610;--surface:#142218;--surface-raised:#1C2E20;--border:#2A4030;--text-primary:#E0EFE6;--text-secondary:#8AB898;--text-muted:#5A7A68;--shadow:0 2px 12px rgba(0,0,0,0.3);--sbg:#0A1610;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit','Tajawal',sans-serif;background:var(--bg);color:var(--text-primary);display:flex;min-height:100vh;transition:background .3s,color .3s;}
+[dir="rtl"]{font-family:'Tajawal','Outfit',sans-serif;}
+.sb{width:var(--sw);min-height:100vh;background:var(--sbg);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:200;}
+[dir="rtl"] .sb{left:auto;right:0;}
+.sb-brand{padding:22px 18px 16px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:10px;}
+.sb-ic{width:38px;height:38px;background:var(--c-gold);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.sb-nav{padding:12px 8px 8px;flex:1;overflow-y:auto;}
+.sbl{font-size:10px;font-weight:700;color:rgba(255,255,255,0.30);letter-spacing:1px;text-transform:uppercase;padding:0 12px;margin:12px 0 4px;}
+.sbi{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;cursor:pointer;transition:all .2s;text-decoration:none;color:rgba(255,255,255,0.78);font-size:13px;font-weight:500;margin-bottom:1px;}
+.sbi:hover{background:rgba(255,255,255,0.07);color:#fff;}
+.sbi.active{background:rgba(201,168,76,0.18);color:#C9A84C;font-weight:700;}
+.sbi-ic{font-size:16px;width:20px;text-align:center;}
+.sb-foot{padding:12px 8px;border-top:1px solid rgba(255,255,255,0.08);}
+.sb-user{display:flex;align-items:center;gap:9px;padding:8px 12px;border-radius:9px;cursor:pointer;}
+.sb-user:hover{background:rgba(255,255,255,0.06);}
+.sb-av{width:32px;height:32px;background:var(--c-gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;}
+.sb-uname{font-size:12px;font-weight:700;color:#fff;}
+.sb-urole{font-size:10px;color:rgba(255,255,255,0.4);}
+.sb-lo{color:rgba(255,255,255,0.32);font-size:14px;cursor:pointer;margin-left:auto;}
+[dir="rtl"] .sb-lo{margin-left:0;margin-right:auto;}
+.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;}
+[dir="rtl"] .main{margin-left:0;margin-right:var(--sw);}
+.topbar{height:64px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow);}
+.pt{font-size:18px;font-weight:800;}
+.tbr{display:flex;align-items:center;gap:8px;}
+.tbb{background:var(--surface-raised);border:1px solid var(--border);border-radius:8px;padding:7px 13px;font-size:12px;font-weight:600;color:var(--text-secondary);cursor:pointer;font-family:inherit;transition:all .2s;}
+.tbb:hover{border-color:var(--c-green);color:var(--c-green);}
+.content{padding:28px;flex:1;}
+/* Summary */
+.sum-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.sc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow);}
+.sc-ic{font-size:22px;}
+.sc-v{font-size:20px;font-weight:800;}
+.sc-l{font-size:11px;color:var(--text-muted);}
+/* Filters */
+.fb{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:18px;display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;box-shadow:var(--shadow);}
+.fg{display:flex;flex-direction:column;gap:5px;min-width:130px;}
+.fl{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;}
+.fi{padding:8px 11px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-primary);font-size:12px;font-family:inherit;outline:none;transition:border-color .2s;}
+.fi:focus{border-color:var(--c-green);}
+.sw{flex:2;min-width:180px;}
+.siw{position:relative;}
+.siw input{width:100%;padding:8px 11px 8px 30px;}
+[dir="rtl"] .siw input{padding:8px 30px 8px 11px;}
+.sic{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:12px;}
+[dir="rtl"] .sic{left:auto;right:9px;}
+/* Table */
+.tc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
+.tc-hd{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.tc-title{font-size:14px;font-weight:700;}
+table{width:100%;border-collapse:collapse;}
+th{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;padding:10px 14px;text-align:left;background:var(--surface-raised);border-bottom:1px solid var(--border);}
+[dir="rtl"] th{text-align:right;}
+td{font-size:13px;padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--surface-raised);}
+.badge{padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;}
+.b-conf{background:#E8F5EE;color:#1A8A4A;}
+.b-comp{background:#EBF4FB;color:#2980B9;}
+.b-canc{background:#FDE8E8;color:#C0392B;}
+.b-pend{background:#FEF3E0;color:#B8681A;}
+[data-theme="dark"] .b-conf{background:rgba(26,138,74,.2);}
+[data-theme="dark"] .b-comp{background:rgba(41,128,185,.2);}
+[data-theme="dark"] .b-canc{background:rgba(192,57,43,.2);}
+[data-theme="dark"] .b-pend{background:rgba(184,104,26,.2);}
+.bid{font-family:'Courier New',monospace;font-size:11px;background:var(--c-green-pale);color:var(--c-green);padding:2px 7px;border-radius:5px;font-weight:700;}
+[data-theme="dark"] .bid{background:rgba(0,102,51,.2);}
+.ib{width:28px;height:28px;border-radius:7px;border:1px solid var(--border);background:var(--surface-raised);color:var(--text-secondary);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.ib:hover{border-color:var(--c-green);color:var(--c-green);}
+.ib.d:hover{border-color:#C0392B;color:#C0392B;}
+.pag{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-top:1px solid var(--border);}
+.pi{font-size:12px;color:var(--text-muted);}
+.pbs{display:flex;gap:5px;}
+.pb{width:30px;height:30px;border-radius:7px;border:1px solid var(--border);background:var(--surface-raised);color:var(--text-secondary);cursor:pointer;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.pb:hover,.pb.active{background:var(--c-green);color:#fff;border-color:var(--c-green);}
+/* Modal */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.mo.open{display:flex;}
+.md{background:var(--surface);border-radius:18px;width:460px;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.mh{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.mt2{font-size:16px;font-weight:800;}
+.mc{background:var(--surface-raised);border:1px solid var(--border);border-radius:7px;width:30px;height:30px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;}
+.mc:hover{background:#FDE8E8;color:#C0392B;}
+.mb{padding:20px 24px;}
+.dr{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.dr:last-child{border-bottom:none;}
+.dl{color:var(--text-muted);}
+.dv{font-weight:700;}
+.mf{padding:14px 24px 20px;display:flex;gap:8px;justify-content:flex-end;}
+.bts{background:var(--surface-raised);border:1px solid var(--border);border-radius:8px;padding:9px 14px;font-size:12px;font-weight:600;color:var(--text-secondary);cursor:pointer;font-family:inherit;}
+.btp{background:var(--c-green);color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
+.toast{position:fixed;bottom:22px;right:22px;background:var(--c-green);color:#fff;padding:12px 18px;border-radius:11px;font-size:13px;font-weight:600;display:none;align-items:center;gap:8px;z-index:9999;box-shadow:0 8px 24px rgba(0,102,51,.3);}
+[dir="rtl"] .toast{right:auto;left:22px;}
+.toast.show{display:flex;}
+@media(max-width:1000px){.sum-row{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<nav class="sb">
+  <div class="sb-brand"><div class="sb-ic">🚆</div></div>
+  <div class="sb-nav" id="sidebar-nav"></div>
+  <div class="sb-foot"><div class="sb-user"><div class="sb-av" id="sb-av">A</div><div><div class="sb-uname" id="sb-name">Admin</div><div class="sb-urole" id="sb-role">Administrator</div></div><div class="sb-lo" onclick="rwLogout()">↩</div></div></div>
+</nav>
+<div class="main">
+  <div class="topbar">
+    <div class="pt" data-i18n="pt">Booking Management</div>
+    <div class="tbr">
+      <button class="tbb" onclick="toggleLang()" id="lang-btn">عربي</button>
+      <button class="tbb" onclick="toggleTheme()" id="theme-btn">🌙</button>
+      <button class="tbb" onclick="exportCSV()">📤 <span data-i18n="exp">Export</span></button>
+    </div>
+  </div>
+  <div class="content">
+    <div class="sum-row">
+      <div class="sc"><div class="sc-ic">🎫</div><div><div class="sc-v">247</div><div class="sc-l" data-i18n="s1">Total Bookings</div></div></div>
+      <div class="sc"><div class="sc-ic">✅</div><div><div class="sc-v" style="color:var(--c-green)">182</div><div class="sc-l" data-i18n="s2">Confirmed</div></div></div>
+      <div class="sc"><div class="sc-ic">❌</div><div><div class="sc-v" style="color:#C0392B">38</div><div class="sc-l" data-i18n="s3">Cancelled</div></div></div>
+      <div class="sc"><div class="sc-ic">💰</div><div><div class="sc-v" style="color:var(--c-gold)">SAR 62K</div><div class="sc-l" data-i18n="s4">Total Revenue</div></div></div>
+    </div>
+    <div class="fb">
+      <div class="fg sw"><label class="fl" data-i18n="f-search">Search</label><div class="siw"><span class="sic">🔍</span><input type="text" class="fi" id="si" placeholder="ID, passenger, route..." oninput="applyFilter()"></div></div>
+      <div class="fg"><label class="fl" data-i18n="f-status">Status</label><select class="fi" id="fs" onchange="applyFilter()"><option value="">All</option><option value="confirmed">Confirmed</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option><option value="pending">Pending</option></select></div>
+      <div class="fg"><label class="fl" data-i18n="f-route">Route</label><select class="fi" id="fr" onchange="applyFilter()"><option value="">All Routes</option><option>Riyadh→Jeddah</option><option>Riyadh→Dammam</option><option>Jeddah→Makkah</option><option>Riyadh→Madinah</option></select></div>
+      <div class="fg"><label class="fl" data-i18n="f-date">Date</label><input type="date" class="fi" id="fd" onchange="applyFilter()"></div>
+      <button class="tbb" onclick="clearF()" data-i18n="clear">Clear</button>
+    </div>
+    <div class="tc">
+      <div class="tc-hd"><div class="tc-title" data-i18n="blist">Booking List</div><div class="pi" id="rc">247 records</div></div>
+      <div style="overflow-x:auto"><table><thead><tr>
+        <th data-i18n="th-id">Booking ID</th><th data-i18n="th-pass">Passenger</th><th data-i18n="th-route">Route</th>
+        <th data-i18n="th-date">Date</th><th data-i18n="th-train">Train</th><th data-i18n="th-seat">Seat</th>
+        <th data-i18n="th-price">Amount</th><th data-i18n="th-status">Status</th><th data-i18n="th-act">Actions</th>
+      </tr></thead><tbody id="tbody"></tbody></table></div>
+      <div class="pag"><div class="pi" id="pi">Showing 1–10 of 247</div><div class="pbs"><button class="pb" onclick="pg(-1)">‹</button><button class="pb active">1</button><button class="pb" onclick="pg(1)">2</button><button class="pb" onclick="pg(1)">›</button></div></div>
+    </div>
+  </div>
+</div>
+<!-- Detail Modal -->
+<div class="mo" id="modal">
+  <div class="md">
+    <div class="mh"><div class="mt2" data-i18n="m-title">Booking Details</div><button class="mc" onclick="closeM()">✕</button></div>
+    <div class="mb" id="m-body"></div>
+    <div class="mf"><button class="bts" onclick="closeM()" data-i18n="close">Close</button><button class="btp" onclick="window.print()" data-i18n="print">🖨️ Print</button></div>
+  </div>
+</div>
+<div class="toast" id="toast">✅ <span id="tm"></span></div>
+<script>
+const i18n={en:{'pt':'Booking Management','exp':'Export','s1':'Total Bookings','s2':'Confirmed','s3':'Cancelled','s4':'Total Revenue','f-search':'Search','f-status':'Status','f-route':'Route','f-date':'Date','clear':'Clear','blist':'Booking List','th-id':'Booking ID','th-pass':'Passenger','th-route':'Route','th-date':'Date','th-train':'Train','th-seat':'Seat','th-price':'Amount','th-status':'Status','th-act':'Actions','m-title':'Booking Details','close':'Close','print':'🖨️ Print','lang-btn':'عربي'},ar:{'pt':'إدارة الحجوزات','exp':'تصدير','s1':'إجمالي الحجوزات','s2':'مؤكدة','s3':'ملغاة','s4':'إجمالي الإيرادات','f-search':'بحث','f-status':'الحالة','f-route':'المسار','f-date':'التاريخ','clear':'مسح','blist':'قائمة الحجوزات','th-id':'رقم الحجز','th-pass':'الراكب','th-route':'المسار','th-date':'التاريخ','th-train':'القطار','th-seat':'المقعد','th-price':'المبلغ','th-status':'الحالة','th-act':'إجراءات','m-title':'تفاصيل الحجز','close':'إغلاق','print':'🖨️ طباعة','lang-btn':'English'}};
+const bkData=[
+  {id:'BK-9182',passenger:'Mohammed Al-Rashidi',nid:'1093847261',phone:'0551234567',email:'moh@email.com',from:'Riyadh',to:'Jeddah',date:'2026-05-02',train:'IR-401',seat:'14A',cls:'First Class',price:350,status:'confirmed',payment:'Mada'},
+  {id:'BK-9170',passenger:'Sara Al-Qahtani',nid:'2187364920',phone:'0559876543',email:'sara@email.com',from:'Riyadh',to:'Dammam',date:'2026-04-28',train:'IR-205',seat:'8C',cls:'Economy',price:120,status:'cancelled',payment:'Visa'},
+  {id:'BK-9155',passenger:'Abdullah Al-Ghamdi',nid:'1072938461',phone:'0508765432',email:'abd@email.com',from:'Jeddah',to:'Makkah',date:'2026-04-25',train:'HR-103',seat:'22B',cls:'Economy',price:50,status:'completed',payment:'Apple Pay'},
+  {id:'BK-9140',passenger:'Fatimah Al-Zahrani',nid:'2093847561',phone:'0507654321',email:'fat@email.com',from:'Riyadh',to:'Madinah',date:'2026-04-20',train:'IR-302',seat:'5A',cls:'First Class',price:420,status:'completed',payment:'Mada'},
+  {id:'BK-9130',passenger:'Omar Al-Otaibi',nid:'1082736451',phone:'0506543210',email:'omar@email.com',from:'Riyadh',to:'Dammam',date:'2026-04-18',train:'IR-210',seat:'31D',cls:'Economy',price:120,status:'cancelled',payment:'Visa'},
+  {id:'BK-9118',passenger:'Khalid Al-Shehri',nid:'1091827364',phone:'0505432109',email:'kha@email.com',from:'Riyadh',to:'Jeddah',date:'2026-04-15',train:'IR-403',seat:'17C',cls:'Economy',price:180,status:'completed',payment:'Mada'},
+  {id:'BK-9102',passenger:'Noura Al-Harbi',nid:'2098172634',phone:'0504321098',email:'nour@email.com',from:'Jeddah',to:'Riyadh',date:'2026-04-10',train:'IR-402',seat:'3B',cls:'Student',price:90,status:'completed',payment:'Apple Pay'},
+  {id:'BK-9095',passenger:'Bandar Al-Mutairi',nid:'1087364920',phone:'0503210987',email:'ban@email.com',from:'Riyadh',to:'Jeddah',date:'2026-04-05',train:'IR-401',seat:'9A',cls:'First Class',price:350,status:'confirmed',payment:'Visa'},
+  {id:'BK-9080',passenger:'Reem Al-Dossari',nid:'2076453819',phone:'0502109876',email:'reem@email.com',from:'Riyadh',to:'Dammam',date:'2026-03-30',train:'IR-205',seat:'44B',cls:'Economy',price:120,status:'pending',payment:'Mada'},
+  {id:'BK-9060',passenger:'Ahmed Al-Rashid',nid:'1065438291',phone:'0501234567',email:'ah@email.com',from:'Jeddah',to:'Makkah',date:'2026-03-25',train:'HR-103',seat:'12C',cls:'Economy',price:50,status:'confirmed',payment:'Mada'},
+];
+const arSt={Riyadh:'الرياض',Jeddah:'جدة',Dammam:'الدمام',Makkah:'مكة',Madinah:'المدينة'};
+const stDef={en:{confirmed:'Confirmed',completed:'Completed',cancelled:'Cancelled',pending:'Pending'},ar:{confirmed:'مؤكد',completed:'مكتمل',cancelled:'ملغى',pending:'معلق'}};
+const bCls={confirmed:'b-conf',completed:'b-comp',cancelled:'b-canc',pending:'b-pend'};
+let lang=localStorage.getItem('rw-lang')||'en',theme=localStorage.getItem('rw-theme')||'light';
+let filtered=[...bkData],curPage=1,perPage=10;
+const sidenavs={
+  admin:`<div class="sbl" data-i18n="l-main">Main</div><a href="home-admin.html" class="sbi" data-home-link><span class="sbi-ic">🏠</span><span>Home</span></a><a href="dashboard.html" class="sbi"><span class="sbi-ic">📊</span><span>Dashboard</span></a><div class="sbl">Operations</div><a href="schedules.html" class="sbi"><span class="sbi-ic">📅</span><span>Schedules</span></a><a href="routes.html" class="sbi"><span class="sbi-ic">🗺️</span><span>Routes</span></a><a href="occupancy.html" class="sbi"><span class="sbi-ic">💺</span><span>Occupancy</span></a><div class="sbl">Management</div><a href="admin-bookings.html" class="sbi active"><span class="sbi-ic">📋</span><span>Bookings</span></a><a href="users.html" class="sbi"><span class="sbi-ic">👥</span><span>Users</span></a>`,
+  staff:`<div class="sbl">Operations</div><a href="home-staff.html" class="sbi" data-home-link><span class="sbi-ic">🏠</span><span>Home</span></a><a href="schedules.html" class="sbi"><span class="sbi-ic">📅</span><span>Schedules</span></a><a href="occupancy.html" class="sbi"><span class="sbi-ic">💺</span><span>Occupancy</span></a><a href="admin-bookings.html" class="sbi active"><span class="sbi-ic">📋</span><span>Bookings</span></a>`
+};
+function stn(n){return lang==='ar'?(arSt[n]||n):n;}
+function renderTable(){
+  const l=lang;const s=(curPage-1)*perPage;const page=filtered.slice(s,s+perPage);
+  document.getElementById('tbody').innerHTML=page.map(b=>`<tr>
+    <td><span class="bid">${b.id}</span></td>
+    <td><div style="font-weight:600">${b.passenger}</div><div style="font-size:11px;color:var(--text-muted)">${b.email}</div></td>
+    <td>${stn(b.from)} ${l==='ar'?'←':'→'} ${stn(b.to)}</td>
+    <td>${b.date}</td><td style="font-weight:600">${b.train}</td><td>${b.seat}</td>
+    <td style="font-weight:700;color:var(--c-green)">SAR ${b.price}</td>
+    <td><span class="badge ${bCls[b.status]}">${stDef[l][b.status]}</span></td>
+    <td><div style="display:flex;gap:5px"><button class="ib" onclick="showD('${b.id}')">👁</button>${b.status==='confirmed'||b.status==='pending'?`<button class="ib d" onclick="cancelB('${b.id}')">✕</button>`:''}</div></td>
+  </tr>`).join('');
+  document.getElementById('pi').textContent=l==='ar'?`${s+1}–${Math.min(s+perPage,filtered.length)} من ${filtered.length}`:`Showing ${s+1}–${Math.min(s+perPage,filtered.length)} of ${filtered.length}`;
+  document.getElementById('rc').textContent=l==='ar'?`${filtered.length} سجل`:`${filtered.length} records`;
+}
+function applyFilter(){
+  const q=document.getElementById('si').value.toLowerCase(),st=document.getElementById('fs').value,rt=document.getElementById('fr').value,dt=document.getElementById('fd').value;
+  filtered=bkData.filter(b=>(!q||(b.id+b.passenger+b.from+b.to).toLowerCase().includes(q))&&(!st||b.status===st)&&(!rt||b.from+'→'+b.to===rt)&&(!dt||b.date===dt));
+  curPage=1;renderTable();
+}
+function clearF(){document.getElementById('si').value='';document.getElementById('fs').value='';document.getElementById('fr').value='';document.getElementById('fd').value='';filtered=[...bkData];curPage=1;renderTable();}
+function pg(d){const max=Math.ceil(filtered.length/perPage);curPage=Math.max(1,Math.min(max,curPage+d));renderTable();}
+function showD(id){
+  const b=bkData.find(x=>x.id===id);if(!b)return;const l=lang;
+  const rows=[['ID',b.id],['Passenger/الراكب',b.passenger],['NID/الهوية',b.nid],['Phone/الجوال',b.phone],['Email',b.email],['Route/المسار',stn(b.from)+' → '+stn(b.to)],['Train/القطار',b.train],['Date/التاريخ',b.date],['Seat/المقعد',b.seat],['Class/الدرجة',b.cls],['Payment/الدفع',b.payment],['Amount/المبلغ','SAR '+b.price],['Status/الحالة',stDef[l][b.status]]];
+  document.getElementById('m-body').innerHTML=rows.map(([k,v])=>`<div class="dr"><span class="dl">${k}</span><span class="dv">${v}</span></div>`).join('');
+  document.getElementById('modal').classList.add('open');
+}
+function closeM(){document.getElementById('modal').classList.remove('open');}
+function cancelB(id){if(!confirm(lang==='ar'?'إلغاء هذا الحجز؟':'Cancel this booking?'))return;const b=bkData.find(x=>x.id===id);if(b)b.status='cancelled';applyFilter();showToast(lang==='ar'?'تم الإلغاء':'Booking cancelled');}
+function exportCSV(){showToast(lang==='ar'?'جاري التصدير…':'Exporting CSV…');}
+function showToast(m){document.getElementById('tm').textContent=m;const t=document.getElementById('toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+function applyLang(l){lang=l;localStorage.setItem('rw-lang',l);document.documentElement.setAttribute('lang',l);document.documentElement.setAttribute('dir',l==='ar'?'rtl':'ltr');document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');if(i18n[l][k])el.textContent=i18n[l][k];});document.getElementById('lang-btn').textContent=i18n[l]['lang-btn'];renderTable();}
+function toggleLang(){applyLang(lang==='en'?'ar':'en');}
+function applyTheme(t){theme=t;localStorage.setItem('rw-theme',t);document.documentElement.setAttribute('data-theme',t);document.getElementById('theme-btn').textContent=t==='dark'?'☀️':'🌙';}
+function toggleTheme(){applyTheme(theme==='light'?'dark':'light');}
+const u=window.RW_USER||{};
+document.getElementById('sidebar-nav').innerHTML=sidenavs[u.role]||sidenavs.admin;
+applyTheme(theme);applyLang(lang);
+</script>
+</body>
+</html>

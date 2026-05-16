@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RailWay SA — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<script>var PAGE_ROLES=['admin'];</script>
+<script src="auth.js"></script>
+<style>
+:root{--c-green:#006633;--c-green-dark:#004D26;--c-green-mid:#00853D;--c-green-pale:#EFF7F2;--c-gold:#C9A84C;--c-gold-light:#F5E9C6;--bg:#F2F5F3;--surface:#FFFFFF;--surface-raised:#F8FBF9;--border:#D8E5DD;--text-primary:#112218;--text-secondary:#4A6858;--text-muted:#7A9888;--shadow:0 2px 12px rgba(0,102,51,.08);--shadow-md:0 4px 24px rgba(0,102,51,.12);--radius:14px;--sw:260px;--sbg:#004D26;}
+[data-theme="dark"]{--bg:#0A1610;--surface:#142218;--surface-raised:#1C2E20;--border:#2A4030;--text-primary:#E0EFE6;--text-secondary:#8AB898;--text-muted:#5A7A68;--shadow:0 2px 12px rgba(0,0,0,.3);--sbg:#0A1610;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit','Tajawal',sans-serif;background:var(--bg);color:var(--text-primary);display:flex;min-height:100vh;transition:background .3s,color .3s;}
+[dir="rtl"]{font-family:'Tajawal','Outfit',sans-serif;}
+.sb{width:var(--sw);min-height:100vh;background:var(--sbg);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:200;}
+[dir="rtl"] .sb{left:auto;right:0;}
+.sb-brand{padding:22px 18px 16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px;}
+.sb-ic{width:38px;height:38px;background:var(--c-gold);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.sb-nav{padding:12px 8px 8px;flex:1;overflow-y:auto;}
+.sbl{font-size:10px;font-weight:700;color:rgba(255,255,255,.30);letter-spacing:1px;text-transform:uppercase;padding:0 12px;margin:12px 0 4px;}
+.sbi{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;cursor:pointer;transition:all .2s;text-decoration:none;color:rgba(255,255,255,.78);font-size:13px;font-weight:500;margin-bottom:1px;}
+.sbi:hover{background:rgba(255,255,255,.07);color:#fff;}
+.sbi.active{background:rgba(201,168,76,.18);color:#C9A84C;font-weight:700;}
+.sbi-ic{font-size:16px;width:20px;text-align:center;}
+.sb-foot{padding:12px 8px;border-top:1px solid rgba(255,255,255,.08);}
+.sb-user{display:flex;align-items:center;gap:9px;padding:8px 12px;border-radius:9px;}
+.sb-av{width:32px;height:32px;background:var(--c-gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;}
+.sb-uname{font-size:12px;font-weight:700;color:#fff;}
+.sb-urole{font-size:10px;color:rgba(255,255,255,.4);}
+.sb-lo{color:rgba(255,255,255,.32);font-size:14px;cursor:pointer;margin-left:auto;}
+[dir="rtl"] .sb-lo{margin-left:0;margin-right:auto;}
+.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;}
+[dir="rtl"] .main{margin-left:0;margin-right:var(--sw);}
+.topbar{height:64px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow);}
+.pt{font-size:18px;font-weight:800;}
+.tbr{display:flex;align-items:center;gap:8px;}
+.tbb{background:var(--surface-raised);border:1px solid var(--border);border-radius:8px;padding:7px 13px;font-size:12px;font-weight:600;color:var(--text-secondary);cursor:pointer;font-family:inherit;transition:all .2s;}
+.tbb:hover{border-color:var(--c-green);color:var(--c-green);}
+.content{padding:28px;flex:1;}
+.hero{background:linear-gradient(135deg,var(--c-green-dark),var(--c-green-mid));border-radius:18px;padding:28px 32px;margin-bottom:24px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:rgba(201,168,76,.10);}
+.hbadge{background:rgba(201,168,76,.22);border:1px solid rgba(201,168,76,.4);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--c-gold);font-weight:700;display:inline-flex;align-items:center;gap:5px;margin-bottom:9px;}
+.pulse{width:6px;height:6px;border-radius:50%;background:var(--c-gold);animation:p 2s infinite;}
+@keyframes p{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}
+.hero h2{font-size:24px;font-weight:800;color:#fff;margin-bottom:5px;}
+.hero p{font-size:13px;color:rgba(255,255,255,.70);max-width:400px;line-height:1.6;}
+.hbtns{display:flex;gap:10px;margin-top:18px;}
+.hbtn{padding:10px 20px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-block;transition:all .2s;}
+.hbtn-g{background:var(--c-gold);color:#1A0E00;border:none;}
+.hbtn-g:hover{background:#DFC070;}
+.hbtn-w{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.28);}
+.hbtn-w:hover{background:rgba(255,255,255,.24);}
+.hem{position:absolute;right:30px;bottom:8px;font-size:64px;opacity:.12;}
+[dir="rtl"] .hem{right:auto;left:30px;transform:scaleX(-1);}
+.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.sc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);}
+.sc-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.sc-ic{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.ic-g{background:var(--c-green-pale);}
+.ic-gold{background:var(--c-gold-light);}
+[data-theme="dark"] .ic-g{background:rgba(0,102,51,.18);}
+[data-theme="dark"] .ic-gold{background:rgba(201,168,76,.15);}
+.sc-badge{font-size:10px;font-weight:700;padding:3px 7px;border-radius:20px;}
+.up{background:#E8F5EE;color:#1A8A4A;}
+.dn{background:#FDE8E8;color:#C0392B;}
+[data-theme="dark"] .up{background:rgba(26,138,74,.2);}
+[data-theme="dark"] .dn{background:rgba(192,57,43,.2);}
+.sc-v{font-size:28px;font-weight:800;letter-spacing:-1px;}
+.sc-l{font-size:11px;color:var(--text-muted);margin-top:3px;}
+.shd{font-size:15px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:7px;}
+.shd span{width:4px;height:17px;background:var(--c-gold);border-radius:3px;}
+.qgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
+.qc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;cursor:pointer;transition:all .2s;text-decoration:none;display:block;}
+.qc:hover{border-color:var(--c-green);transform:translateY(-2px);box-shadow:var(--shadow-md);}
+.qc-ic{font-size:24px;margin-bottom:8px;}
+.qc-t{font-size:12.5px;font-weight:700;color:var(--text-primary);margin-bottom:2px;}
+.qc-d{font-size:11px;color:var(--text-muted);}
+.tcol{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);}
+.chd{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px;}
+.ct{font-size:13px;font-weight:700;}
+.cl{font-size:11px;color:var(--c-green);font-weight:600;text-decoration:none;}
+.di{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.di:last-child{border-bottom:none;}
+.dt{font-size:16px;font-weight:800;color:var(--c-green);min-width:46px;}
+.dinfo{flex:1;}
+.dr{font-size:12.5px;font-weight:700;}
+.ds{font-size:11px;color:var(--text-muted);margin-top:1px;}
+.sb2{padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;}
+.s-on{background:#E8F5EE;color:#1A8A4A;}
+.s-dl{background:#FEF3E0;color:#B8681A;}
+.s-cx{background:#FDE8E8;color:#C0392B;}
+[data-theme="dark"] .s-on{background:rgba(26,138,74,.2);}
+[data-theme="dark"] .s-dl{background:rgba(184,104,26,.2);}
+[data-theme="dark"] .s-cx{background:rgba(192,57,43,.2);}
+.ai{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
+.ai:last-child{border-bottom:none;}
+.ad{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+.ad-b{background:var(--c-green-pale);}
+.ad-c{background:#FDE8E8;}
+.ad-s{background:var(--c-gold-light);}
+[data-theme="dark"] .ad-b{background:rgba(0,102,51,.18);}
+[data-theme="dark"] .ad-c{background:rgba(192,57,43,.15);}
+[data-theme="dark"] .ad-s{background:rgba(201,168,76,.15);}
+.am{font-size:12px;font-weight:600;}
+.as2{font-size:11px;color:var(--text-muted);margin-top:1px;}
+.at{font-size:10px;color:var(--text-muted);flex-shrink:0;}
+@media(max-width:1100px){.sgrid,.qgrid{grid-template-columns:repeat(2,1fr)}.tcol{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav class="sb">
+  <div class="sb-brand"><div class="sb-ic">🚆</div></div>
+  <div class="sb-nav">
+    <div class="sbl" data-i18n="l-main">Main</div>
+    <a href="home-admin.html" class="sbi active" data-home-link><span class="sbi-ic">🏠</span><span data-i18n="n-home">Home</span></a>
+    <a href="dashboard.html" class="sbi"><span class="sbi-ic">📊</span><span data-i18n="n-dash">Dashboard</span></a>
+    <div class="sbl" data-i18n="l-ops">Operations</div>
+    <a href="schedules.html" class="sbi"><span class="sbi-ic">📅</span><span data-i18n="n-sched">Schedules</span></a>
+    <a href="routes.html" class="sbi"><span class="sbi-ic">🗺️</span><span data-i18n="n-routes">Routes</span></a>
+    <a href="occupancy.html" class="sbi"><span class="sbi-ic">💺</span><span data-i18n="n-occ">Occupancy</span></a>
+    <div class="sbl" data-i18n="l-mgmt">Management</div>
+    <a href="admin-bookings.html" class="sbi"><span class="sbi-ic">📋</span><span data-i18n="n-bk">Bookings</span></a>
+    <a href="users.html" class="sbi"><span class="sbi-ic">👥</span><span data-i18n="n-users">Users</span></a>
+  </div>
+  <div class="sb-foot"><div class="sb-user"><div class="sb-av" id="sb-av">A</div><div><div class="sb-uname" id="sb-name">Admin</div><div class="sb-urole" id="sb-role">Administrator</div></div><div class="sb-lo" onclick="rwLogout()">↩</div></div></div>
+</nav>
+<div class="main">
+  <div class="topbar">
+    <div class="pt" data-i18n="pt">Admin Overview</div>
+    <div class="tbr">
+      <button class="tbb" onclick="toggleLang()" id="lang-btn">عربي</button>
+      <button class="tbb" onclick="toggleTheme()" id="theme-btn">🌙</button>
+      <button class="tbb" onclick="rwLogout()">↩</button>
+    </div>
+  </div>
+  <div class="content">
+    <div class="hero">
+      <div class="hbadge"><span class="pulse"></span><span data-i18n="live">🟢 Live Operations</span></div>
+      <h2 id="hero-h2">Good morning, Admin 👋</h2>
+      <p data-i18n="hero-p">Full system overview — schedules, users, revenue and live operations.</p>
+      <div class="hbtns"><a href="schedules.html" class="hbtn hbtn-g" data-i18n="hb1">Manage Schedules</a><a href="dashboard.html" class="hbtn hbtn-w" data-i18n="hb2">View Analytics</a></div>
+      <div class="hem">🚄</div>
+    </div>
+    <div class="sgrid">
+      <div class="sc"><div class="sc-hd"><div class="sc-ic ic-g">📅</div><span class="sc-badge up">+12%</span></div><div class="sc-v">47</div><div class="sc-l" data-i18n="s1">Trips Today</div></div>
+      <div class="sc"><div class="sc-hd"><div class="sc-ic ic-gold">🎫</div><span class="sc-badge up">+8%</span></div><div class="sc-v">2,841</div><div class="sc-l" data-i18n="s2">Active Bookings</div></div>
+      <div class="sc"><div class="sc-hd"><div class="sc-ic ic-g">💺</div><span class="sc-badge dn">-3%</span></div><div class="sc-v">78%</div><div class="sc-l" data-i18n="s3">Avg Occupancy</div></div>
+      <div class="sc"><div class="sc-hd"><div class="sc-ic ic-gold">💰</div><span class="sc-badge up">+21%</span></div><div class="sc-v">SAR 184K</div><div class="sc-l" data-i18n="s4">Revenue Today</div></div>
+    </div>
+    <div class="shd"><span></span><span data-i18n="qa">Quick Actions</span></div>
+    <div class="qgrid">
+      <a href="schedules.html" class="qc"><div class="qc-ic">📅</div><div class="qc-t" data-i18n="qa1">Manage Schedules</div><div class="qc-d" data-i18n="qa1d">Create & edit timetables</div></a>
+      <a href="routes.html" class="qc"><div class="qc-ic">🗺️</div><div class="qc-t" data-i18n="qa2">Routes & Pricing</div><div class="qc-d" data-i18n="qa2d">Define routes and fares</div></a>
+      <a href="users.html" class="qc"><div class="qc-ic">👥</div><div class="qc-t" data-i18n="qa3">Manage Users</div><div class="qc-d" data-i18n="qa3d">Roles & permissions</div></a>
+      <a href="dashboard.html" class="qc"><div class="qc-ic">📊</div><div class="qc-t" data-i18n="qa4">Analytics</div><div class="qc-d" data-i18n="qa4d">Revenue & reports</div></a>
+    </div>
+    <div class="tcol">
+      <div class="card"><div class="chd"><div class="ct" data-i18n="dep">Upcoming Departures</div><a href="schedules.html" class="cl" data-i18n="sa">See all →</a></div><div id="dep-list"></div></div>
+      <div class="card"><div class="chd"><div class="ct" data-i18n="act">System Activity</div><a href="admin-bookings.html" class="cl" data-i18n="sa">See all →</a></div><div id="act-list"></div></div>
+    </div>
+  </div>
+</div>
+<script>
+const i18n={en:{'l-main':'Main','n-home':'Home','n-dash':'Dashboard','l-ops':'Operations','n-sched':'Schedules','n-routes':'Routes','n-occ':'Occupancy','l-mgmt':'Management','n-bk':'Bookings','n-users':'Users','pt':'Admin Overview','live':'🟢 Live Operations','hero-p':'Full system overview — schedules, users, revenue and live operations.','hb1':'Manage Schedules','hb2':'View Analytics','s1':'Trips Today','s2':'Active Bookings','s3':'Avg Occupancy','s4':'Revenue Today','qa':'Quick Actions','qa1':'Manage Schedules','qa1d':'Create & edit timetables','qa2':'Routes & Pricing','qa2d':'Define routes and fares','qa3':'Manage Users','qa3d':'Roles & permissions','qa4':'Analytics','qa4d':'Revenue & reports','dep':'Upcoming Departures','act':'System Activity','sa':'See all →','lang-btn':'عربي'},ar:{'l-main':'الرئيسية','n-home':'الرئيسية','n-dash':'لوحة التحكم','l-ops':'العمليات','n-sched':'الجداول','n-routes':'المسارات','n-occ':'الإشغال','l-mgmt':'الإدارة','n-bk':'الحجوزات','n-users':'المستخدمون','pt':'نظرة عامة','live':'🟢 عمليات مباشرة','hero-p':'نظرة شاملة على النظام — الجداول والمستخدمين والإيرادات.','hb1':'إدارة الجداول','hb2':'عرض التحليلات','s1':'رحلات اليوم','s2':'الحجوزات النشطة','s3':'متوسط الإشغال','s4':'إيرادات اليوم','qa':'إجراءات سريعة','qa1':'إدارة الجداول','qa1d':'إنشاء وتعديل الجداول','qa2':'المسارات والتسعير','qa2d':'تحديد المسارات والأسعار','qa3':'إدارة المستخدمين','qa3d':'الأدوار والصلاحيات','qa4':'التحليلات','qa4d':'الإيرادات والتقارير','dep':'المغادرات القادمة','act':'نشاط النظام','sa':'عرض الكل ←','lang-btn':'English'}};
+const deps=[{t:'08:30',f:'Riyadh',to:'Jeddah',tr:'IR-401',st:'on',sl:{en:'On Time',ar:'في الموعد'}},{t:'09:15',f:'Riyadh',to:'Dammam',tr:'IR-205',st:'on',sl:{en:'On Time',ar:'في الموعد'}},{t:'10:00',f:'Jeddah',to:'Makkah',tr:'HR-103',st:'dl',sl:{en:'Delayed',ar:'متأخر'}},{t:'10:45',f:'Riyadh',to:'Madinah',tr:'IR-302',st:'on',sl:{en:'On Time',ar:'في الموعد'}},{t:'11:30',f:'Dammam',to:'Riyadh',tr:'IR-210',st:'cx',sl:{en:'Cancelled',ar:'ملغى'}}];
+const acts=[{ic:'🎫',dot:'ad-b',m:{en:'New booking confirmed',ar:'تم تأكيد حجز جديد'},s:{en:'#BK-9182 — Riyadh→Jeddah',ar:'#BK-9182 — الرياض←جدة'},t:'2m'},{ic:'❌',dot:'ad-c',m:{en:'Booking cancelled',ar:'تم إلغاء الحجز'},s:{en:'#BK-9170',ar:'#BK-9170'},t:'18m'},{ic:'⚙️',dot:'ad-s',m:{en:'Schedule updated',ar:'تم تحديث الجدول'},s:{en:'IR-401 → 08:30',ar:'IR-401 ← 08:30'},t:'1h'},{ic:'👤',dot:'ad-s',m:{en:'New user registered',ar:'مستخدم جديد'},s:{en:'Passenger account',ar:'حساب راكب'},t:'2h'}];
+const arSt={Riyadh:'الرياض',Jeddah:'جدة',Dammam:'الدمام',Makkah:'مكة',Madinah:'المدينة'};
+let lang=localStorage.getItem('rw-lang')||'en',theme=localStorage.getItem('rw-theme')||'light';
+function stn(n){return lang==='ar'?(arSt[n]||n):n;}
+function render(){
+  document.getElementById('dep-list').innerHTML=deps.map(d=>`<div class="di"><div class="dt">${d.t}</div><div class="dinfo"><div class="dr">${stn(d.f)} ${lang==='ar'?'←':'→'} ${stn(d.to)}</div><div class="ds">${d.tr}</div></div><span class="sb2 s-${d.st}">${d.sl[lang]}</span></div>`).join('');
+  document.getElementById('act-list').innerHTML=acts.map(a=>`<div class="ai"><div class="ad ${a.dot}">${a.ic}</div><div style="flex:1"><div class="am">${a.m[lang]}</div><div class="as2">${a.s[lang]}</div></div><div class="at">${a.t}</div></div>`).join('');
+  const u=window.RW_USER||{};
+  document.getElementById('hero-h2').textContent=(lang==='ar'?'صباح الخير، ':'Good morning, ')+(u.email||'Admin').split('@')[0]+' 👋';
+}
+function applyLang(l){lang=l;localStorage.setItem('rw-lang',l);document.documentElement.setAttribute('lang',l);document.documentElement.setAttribute('dir',l==='ar'?'rtl':'ltr');document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');if(i18n[l][k])el.textContent=i18n[l][k];});document.getElementById('lang-btn').textContent=i18n[l]['lang-btn'];render();}
+function toggleLang(){applyLang(lang==='en'?'ar':'en');}
+function applyTheme(t){theme=t;localStorage.setItem('rw-theme',t);document.documentElement.setAttribute('data-theme',t);document.getElementById('theme-btn').textContent=t==='dark'?'☀️':'🌙';}
+function toggleTheme(){applyTheme(theme==='light'?'dark':'light');}
+applyTheme(theme);applyLang(lang);
+</script>
+</body>
+</html>

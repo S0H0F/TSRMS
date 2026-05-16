@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RailWay SA — My Bookings</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<script>var PAGE_ROLES=['passenger'];</script>
+<script src="auth.js"></script>
+<style>
+:root{--c-green:#006633;--c-green-dark:#004D26;--c-green-mid:#00853D;--c-green-pale:#EFF7F2;--c-gold:#C9A84C;--c-gold-light:#F5E9C6;--bg:#F2F5F3;--surface:#FFFFFF;--surface-raised:#F8FBF9;--border:#D8E5DD;--text-primary:#112218;--text-secondary:#4A6858;--text-muted:#7A9888;--shadow:0 2px 12px rgba(0,102,51,.08);--shadow-md:0 4px 24px rgba(0,102,51,.12);--radius:14px;--sw:240px;--sbg:#004D26;}
+[data-theme="dark"]{--bg:#0A1610;--surface:#142218;--surface-raised:#1C2E20;--border:#2A4030;--text-primary:#E0EFE6;--text-secondary:#8AB898;--text-muted:#5A7A68;--shadow:0 2px 12px rgba(0,0,0,.3);--sbg:#0A1610;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit','Tajawal',sans-serif;background:var(--bg);color:var(--text-primary);display:flex;min-height:100vh;transition:background .3s,color .3s;}
+[dir="rtl"]{font-family:'Tajawal','Outfit',sans-serif;}
+.sb{width:var(--sw);min-height:100vh;background:var(--sbg);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:200;}
+[dir="rtl"] .sb{left:auto;right:0;}
+.sb-brand{padding:22px 18px 16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;}
+.sb-ic{width:38px;height:38px;background:var(--c-gold);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.sb-nav{padding:12px 8px 8px;flex:1;}
+.sbl{font-size:10px;font-weight:700;color:rgba(255,255,255,.30);letter-spacing:1px;text-transform:uppercase;padding:0 12px;margin:12px 0 4px;}
+.sbi{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;cursor:pointer;transition:all .2s;text-decoration:none;color:rgba(255,255,255,.78);font-size:13px;font-weight:500;margin-bottom:1px;}
+.sbi:hover{background:rgba(255,255,255,.07);color:#fff;}
+.sbi.active{background:rgba(201,168,76,.18);color:#C9A84C;font-weight:700;}
+.sbi-ic{font-size:16px;width:20px;text-align:center;}
+.sb-foot{padding:12px 8px;border-top:1px solid rgba(255,255,255,.08);}
+.sb-user{display:flex;align-items:center;gap:9px;padding:8px 12px;border-radius:9px;}
+.sb-av{width:32px;height:32px;background:var(--c-gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;}
+.sb-uname{font-size:12px;font-weight:700;color:#fff;}.sb-urole{font-size:10px;color:rgba(255,255,255,.4);}
+.sb-lo{color:rgba(255,255,255,.32);font-size:14px;cursor:pointer;margin-left:auto;}
+[dir="rtl"] .sb-lo{margin-left:0;margin-right:auto;}
+.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;}
+[dir="rtl"] .main{margin-left:0;margin-right:var(--sw);}
+.topbar{height:64px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow);}
+.pt{font-size:18px;font-weight:800;}
+.tbr{display:flex;align-items:center;gap:8px;}
+.tbb{background:var(--surface-raised);border:1px solid var(--border);border-radius:8px;padding:7px 13px;font-size:12px;font-weight:600;color:var(--text-secondary);cursor:pointer;font-family:inherit;transition:all .2s;}
+.tbb:hover{border-color:var(--c-green);color:var(--c-green);}
+.content{padding:28px;flex:1;}
+.sum-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+.sc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow);}
+.sc-ic{font-size:20px;}.sc-v{font-size:20px;font-weight:800;}.sc-l{font-size:11px;color:var(--text-muted);}
+.fb{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;box-shadow:var(--shadow);}
+.fg{display:flex;flex-direction:column;gap:4px;flex:1;min-width:120px;}
+.fl{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px;}
+.fi{padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text-primary);font-size:12px;font-family:inherit;outline:none;}
+.fi:focus{border-color:var(--c-green);}
+.sw{flex:2;min-width:160px;}
+.siw{position:relative;}
+.siw input{width:100%;padding:8px 10px 8px 28px;}
+[dir="rtl"] .siw input{padding:8px 28px 8px 10px;}
+.sic{position:absolute;left:8px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:11px;}
+[dir="rtl"] .sic{left:auto;right:8px;}
+.bk-item{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:12px;display:flex;align-items:center;gap:16px;cursor:pointer;transition:all .2s;}
+.bk-item:hover{border-color:var(--c-green);box-shadow:var(--shadow);}
+.bk-stripe{width:4px;height:56px;border-radius:3px;flex-shrink:0;}
+.bs-c{background:var(--c-green);}.bs-d{background:#2980B9;}.bs-x{background:#C0392B;}.bs-p{background:var(--c-gold);}
+.bkm{flex:1;}
+.bkr{font-size:14px;font-weight:800;}
+.bks{font-size:11px;color:var(--text-muted);margin-top:3px;display:flex;gap:10px;flex-wrap:wrap;}
+.bkp{font-size:18px;font-weight:800;color:var(--c-green);}
+.bkb{padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;margin-top:4px;display:block;}
+.b-c{background:#E8F5EE;color:#1A8A4A;}.b-d{background:#EBF4FB;color:#2980B9;}.b-x{background:#FDE8E8;color:#C0392B;}.b-p{background:var(--c-gold-light);color:#7A4A00;}
+[data-theme="dark"] .b-c{background:rgba(26,138,74,.2);}.b-d{background:rgba(41,128,185,.2);}
+.bk-acts{display:flex;flex-direction:column;gap:6px;min-width:80px;}
+.ab{padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface-raised);font-size:11px;font-weight:700;color:var(--text-secondary);cursor:pointer;font-family:inherit;text-align:center;transition:all .2s;}
+.ab:hover{border-color:var(--c-green);color:var(--c-green);}
+.ab.cx:hover{border-color:#C0392B;color:#C0392B;}
+/* Modal */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.mo.open{display:flex;}
+.md{background:var(--surface);border-radius:20px;width:500px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.35);}
+.mh{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.mtt{font-size:16px;font-weight:800;}
+.mc2{background:var(--surface-raised);border:1px solid var(--border);border-radius:7px;width:30px;height:30px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;}
+.mc2:hover{background:#FDE8E8;color:#C0392B;}
+.mbody{padding:20px 24px;}
+/* Ticket in modal */
+.ticket-card{background:var(--surface-raised);border:2px dashed var(--border);border-radius:14px;padding:22px;margin-bottom:18px;}
+.tk-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:14px;border-bottom:1px dashed var(--border);}
+.tk-brand{display:flex;align-items:center;gap:9px;}
+.tk-bic{width:34px;height:34px;background:var(--c-gold);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.tk-bn{font-size:14px;font-weight:800;}
+.tk-id{font-family:'Courier New',monospace;font-size:11px;color:var(--c-green);font-weight:700;background:var(--c-green-pale);padding:3px 8px;border-radius:5px;}
+[data-theme="dark"] .tk-id{background:rgba(0,102,51,.2);}
+.tk-route{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.tk-st{font-size:18px;font-weight:800;}
+.tk-ar{font-size:20px;color:var(--c-gold);}
+.tk-det{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.tkd label{font-size:9px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:2px;}
+.tkd span{font-size:13px;font-weight:700;}
+.tk-qr{text-align:center;padding-top:14px;border-top:1px dashed var(--border);}
+.tk-qr canvas{border-radius:8px;display:block;margin:0 auto 6px;}
+.qr-ref{font-family:'Courier New',monospace;font-size:10px;color:var(--text-muted);letter-spacing:1px;}
+.mf{padding:14px 24px 20px;display:flex;gap:8px;justify-content:flex-end;}
+.bts{background:var(--surface-raised);border:1px solid var(--border);border-radius:8px;padding:9px 14px;font-size:12px;font-weight:600;color:var(--text-secondary);cursor:pointer;font-family:inherit;}
+.btp{background:var(--c-green);color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
+.empty{text-align:center;padding:50px;color:var(--text-muted);}
+.empty-ic{font-size:42px;margin-bottom:12px;}
+@media(max-width:900px){.sum-row{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<nav class="sb">
+  <div class="sb-brand"><div class="sb-ic">🚆</div></div>
+  <div class="sb-nav">
+    <div class="sbl" data-i18n="l-main">My Travel</div>
+    <a href="home-passenger.html" class="sbi" data-home-link><span class="sbi-ic">🏠</span><span data-i18n="n-home">Home</span></a>
+    <a href="booking.html" class="sbi"><span class="sbi-ic">🎫</span><span data-i18n="n-book">Book a Ticket</span></a>
+    <a href="my-bookings.html" class="sbi active"><span class="sbi-ic">📋</span><span data-i18n="n-hist">My Bookings</span></a>
+  </div>
+  <div class="sb-foot"><div class="sb-user"><div class="sb-av" id="sb-av">P</div><div><div class="sb-uname" id="sb-name">Passenger</div><div class="sb-urole" id="sb-role">Passenger</div></div><div class="sb-lo" onclick="rwLogout()">↩</div></div></div>
+</nav>
+<div class="main">
+  <div class="topbar">
+    <div class="pt" data-i18n="pt">My Bookings</div>
+    <div class="tbr">
+      <button class="tbb" onclick="toggleLang()" id="lang-btn">عربي</button>
+      <button class="tbb" onclick="toggleTheme()" id="theme-btn">🌙</button>
+    </div>
+  </div>
+  <div class="content">
+    <div class="sum-row">
+      <div class="sc"><div class="sc-ic">🎫</div><div><div class="sc-v">8</div><div class="sc-l" data-i18n="s1">Total Bookings</div></div></div>
+      <div class="sc"><div class="sc-ic">✅</div><div><div class="sc-v" style="color:var(--c-green)">5</div><div class="sc-l" data-i18n="s2">Confirmed</div></div></div>
+      <div class="sc"><div class="sc-ic">🗓️</div><div><div class="sc-v" style="color:var(--c-gold)">2</div><div class="sc-l" data-i18n="s3">Upcoming</div></div></div>
+      <div class="sc"><div class="sc-ic">💰</div><div><div class="sc-v" style="color:var(--c-green)">SAR 1.8K</div><div class="sc-l" data-i18n="s4">Total Spent</div></div></div>
+    </div>
+    <div class="fb">
+      <div class="fg sw"><label class="fl" data-i18n="fs">Search</label><div class="siw"><span class="sic">🔍</span><input type="text" class="fi" id="si" placeholder="Route, train, ID..." oninput="applyF()"></div></div>
+      <div class="fg"><label class="fl" data-i18n="fst">Status</label><select class="fi" id="fst" onchange="applyF()"><option value="">All</option><option value="confirmed">Confirmed</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select></div>
+      <button class="tbb" onclick="clearF()" data-i18n="clr">Clear</button>
+    </div>
+    <div id="bk-list"></div>
+  </div>
+</div>
+<!-- Ticket Modal -->
+<div class="mo" id="modal">
+  <div class="md">
+    <div class="mh"><div class="mtt" data-i18n="m-title">My Ticket</div><button class="mc2" onclick="closeM()">✕</button></div>
+    <div class="mbody">
+      <div class="ticket-card">
+        <div class="tk-hd"><div class="tk-brand"><div class="tk-bic">🚆</div><div class="tk-bn">RailWay SA</div></div><div class="tk-id" id="m-id">BK-XXXXX</div></div>
+        <div class="tk-route"><div><div class="tk-st" id="m-from">—</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px;" id="m-dep">—</div></div><div class="tk-ar">→</div><div style="text-align:right"><div class="tk-st" id="m-to">—</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px;" id="m-arr">—</div></div></div>
+        <div class="tk-det">
+          <div class="tkd"><label data-i18n="td-train">Train</label><span id="m-train">—</span></div>
+          <div class="tkd"><label data-i18n="td-seat">Seat</label><span id="m-seat">—</span></div>
+          <div class="tkd"><label data-i18n="td-date">Date</label><span id="m-date">—</span></div>
+          <div class="tkd"><label data-i18n="td-class">Class</label><span id="m-class">—</span></div>
+          <div class="tkd"><label data-i18n="td-pass">Passenger</label><span id="m-pass">—</span></div>
+          <div class="tkd"><label data-i18n="td-price">Amount</label><span id="m-price" style="color:var(--c-green)">—</span></div>
+        </div>
+        <div class="tk-qr"><canvas id="qr-canvas" width="110" height="110"></canvas><div class="qr-ref" id="m-ref">RWSA-XXXXXXXX</div><div style="font-size:10px;color:var(--text-muted);margin-top:3px;" data-i18n="scan-hint">Scan at boarding gate · امسح عند البوابة</div></div>
+      </div>
+    </div>
+    <div class="mf"><button class="bts" onclick="closeM()" data-i18n="close">Close</button><button class="btp" onclick="window.print()" data-i18n="print">🖨️ Print</button></div>
+  </div>
+</div>
+<script>
+const i18n={en:{'l-main':'My Travel','n-home':'Home','n-book':'Book a Ticket','n-hist':'My Bookings','pt':'My Bookings','s1':'Total Bookings','s2':'Confirmed','s3':'Upcoming','s4':'Total Spent','fs':'Search','fst':'Status','clr':'Clear','m-title':'My Ticket','td-train':'Train','td-seat':'Seat','td-date':'Date','td-class':'Class','td-pass':'Passenger','td-price':'Amount Paid','scan-hint':'Scan at boarding gate · امسح عند البوابة','close':'Close','print':'🖨️ Print','lang-btn':'عربي'},ar:{'l-main':'سفري','n-home':'الرئيسية','n-book':'حجز تذكرة','n-hist':'حجوزاتي','pt':'حجوزاتي','s1':'إجمالي الحجوزات','s2':'مؤكدة','s3':'القادمة','s4':'إجمالي الإنفاق','fs':'بحث','fst':'الحالة','clr':'مسح','m-title':'تذكرتي','td-train':'القطار','td-seat':'المقعد','td-date':'التاريخ','td-class':'الدرجة','td-pass':'الراكب','td-price':'المبلغ المدفوع','scan-hint':'امسح عند البوابة · Scan at boarding gate','close':'إغلاق','print':'🖨️ طباعة','lang-btn':'English'}};
+const stDef={en:{confirmed:'Confirmed',completed:'Completed',cancelled:'Cancelled',pending:'Pending'},ar:{confirmed:'مؤكد',completed:'مكتمل',cancelled:'ملغى',pending:'معلق'}};
+const bkData=[
+  {id:'BK-9182',from:'Riyadh',to:'Jeddah',dep:'08:30',arr:'13:30',date:'2026-05-02',train:'IR-401',seat:'14A',cls:'First Class',price:350,status:'confirmed',passenger:'Mohammed Al-Rashidi',ref:'RWSA-2Q3X8A'},
+  {id:'BK-9155',from:'Jeddah',to:'Makkah',dep:'10:00',arr:'11:00',date:'2026-04-25',train:'HR-103',seat:'22B',cls:'Economy',price:50,status:'completed',passenger:'Mohammed Al-Rashidi',ref:'RWSA-1P7KM2'},
+  {id:'BK-9130',from:'Dammam',to:'Riyadh',dep:'11:30',arr:'14:00',date:'2026-04-18',train:'IR-210',seat:'31D',cls:'Economy',price:120,status:'cancelled',passenger:'Mohammed Al-Rashidi',ref:'RWSA-4N9QX5'},
+  {id:'BK-9095',from:'Riyadh',to:'Jeddah',dep:'08:30',arr:'13:30',date:'2026-04-05',train:'IR-401',seat:'9A',cls:'First Class',price:350,status:'completed',passenger:'Mohammed Al-Rashidi',ref:'RWSA-7V2WR8'},
+];
+const arSt={Riyadh:'الرياض',Jeddah:'جدة',Dammam:'الدمام',Makkah:'مكة',Madinah:'المدينة'};
+const strMap={confirmed:'bs-c',completed:'bs-d',cancelled:'bs-x',pending:'bs-p'};
+const badgeMap={confirmed:'b-c',completed:'b-d',cancelled:'b-x',pending:'b-p'};
+let lang=localStorage.getItem('rw-lang')||'en',theme=localStorage.getItem('rw-theme')||'light',filtered=[...bkData];
+function stn(n){return lang==='ar'?(arSt[n]||n):n;}
+function renderList(){
+  if(!filtered.length){document.getElementById('bk-list').innerHTML=`<div class="empty"><div class="empty-ic">📭</div><p>${lang==='ar'?'لا توجد حجوزات':'No bookings found'}</p></div>`;return;}
+  document.getElementById('bk-list').innerHTML=filtered.map(b=>`<div class="bk-item"><div class="bk-stripe ${strMap[b.status]}"></div><div class="bkm"><div class="bkr">${stn(b.from)} ${lang==='ar'?'←':'→'} ${stn(b.to)}</div><div class="bks"><span>📅 ${b.date}</span><span>🚆 ${b.train}</span><span>💺 ${b.seat}</span></div></div><div style="text-align:right"><div class="bkp">SAR ${b.price}</div><div class="bkb ${badgeMap[b.status]}">${stDef[lang][b.status]}</div></div><div class="bk-acts" onclick="event.stopPropagation()"><button class="ab" onclick="showTicket('${b.id}')">${lang==='ar'?'عرض':'View'}</button>${b.status==='confirmed'?`<button class="ab cx" onclick="cancelB('${b.id}')">${lang==='ar'?'إلغاء':'Cancel'}</button>`:''}</div></div>`).join('');
+}
+function applyF(){const q=document.getElementById('si').value.toLowerCase(),st=document.getElementById('fst').value;filtered=bkData.filter(b=>(!q||(b.id+b.from+b.to+b.train).toLowerCase().includes(q))&&(!st||b.status===st));renderList();}
+function clearF(){document.getElementById('si').value='';document.getElementById('fst').value='';filtered=[...bkData];renderList();}
+function cancelB(id){if(!confirm(lang==='ar'?'إلغاء هذا الحجز؟':'Cancel this booking?'))return;const b=bkData.find(x=>x.id===id);if(b)b.status='cancelled';applyF();}
+function showTicket(id){
+  const b=bkData.find(x=>x.id===id);if(!b)return;
+  document.getElementById('m-id').textContent=b.id;
+  document.getElementById('m-from').textContent=stn(b.from);
+  document.getElementById('m-to').textContent=stn(b.to);
+  document.getElementById('m-dep').textContent=b.dep;
+  document.getElementById('m-arr').textContent=b.arr;
+  document.getElementById('m-train').textContent=b.train;
+  document.getElementById('m-seat').textContent=b.seat;
+  document.getElementById('m-date').textContent=b.date;
+  document.getElementById('m-class').textContent=b.cls;
+  document.getElementById('m-pass').textContent=b.passenger;
+  document.getElementById('m-price').textContent='SAR '+b.price;
+  document.getElementById('m-ref').textContent=b.ref;
+  document.getElementById('modal').classList.add('open');
+  setTimeout(()=>drawQR(b.id+'|'+b.train+'|'+b.from+'-'+b.to+'|'+b.date+'|'+b.seat+'|'+b.passenger),100);
+}
+function closeM(){document.getElementById('modal').classList.remove('open');}
+function drawQR(data){
+  const canvas=document.getElementById('qr-canvas');if(!canvas)return;
+  const ctx=canvas.getContext('2d');const size=110;canvas.width=size;canvas.height=size;
+  function h32(s){let h=0;for(let i=0;i<s.length;i++)h=Math.imul(31,h)+s.charCodeAt(i)|0;return h>>>0;}
+  const seed=h32(data);const M=21;const cell=Math.floor(size/M);const pad=Math.floor((size-M*cell)/2);
+  const dark=getComputedStyle(document.documentElement).getPropertyValue('--c-green').trim()||'#006633';
+  const light=getComputedStyle(document.documentElement).getPropertyValue('--surface').trim()||'#ffffff';
+  ctx.fillStyle=light;ctx.fillRect(0,0,size,size);
+  const mat=Array.from({length:M},(_,r)=>Array.from({length:M},(_,c)=>(h32(data+r*100+c+seed)%3===0?1:0)));
+  function fp(r,c){for(let i=0;i<7;i++)for(let j=0;j<7;j++){const b=i===0||i===6||j===0||j===6,inn=i>=2&&i<=4&&j>=2&&j<=4;mat[r+i][c+j]=(b||inn)?1:0;}for(let i=0;i<8&&r+7<M;i++)mat[r+7][c+i]=0;for(let i=0;i<8&&c+7<M;i++)mat[r+i][c+7]=0;}
+  fp(0,0);fp(0,14);fp(14,0);
+  for(let i=8;i<13;i++){mat[6][i]=i%2===0?1:0;mat[i][6]=i%2===0?1:0;}
+  ctx.fillStyle=dark;
+  for(let r=0;r<M;r++)for(let c=0;c<M;c++)if(mat[r][c]){const x=pad+c*cell,y=pad+r*cell;ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x+0.5,y+0.5,cell-1,cell-1,cell*.25);else ctx.rect(x+0.5,y+0.5,cell-1,cell-1);ctx.fill();}
+  // Center logo
+  const ls=16,lx=(size-ls)/2,ly=(size-ls)/2;
+  ctx.fillStyle=light;ctx.fillRect(lx-2,ly-2,ls+4,ls+4);
+  ctx.font=`bold ${ls}px Arial`;ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('🚆',size/2,size/2+1);
+}
+function applyLang(l){lang=l;localStorage.setItem('rw-lang',l);document.documentElement.setAttribute('lang',l);document.documentElement.setAttribute('dir',l==='ar'?'rtl':'ltr');document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');if(i18n[l][k])el.textContent=i18n[l][k];});document.getElementById('lang-btn').textContent=i18n[l]['lang-btn'];renderList();}
+function toggleLang(){applyLang(lang==='en'?'ar':'en');}
+function applyTheme(t){theme=t;localStorage.setItem('rw-theme',t);document.documentElement.setAttribute('data-theme',t);document.getElementById('theme-btn').textContent=t==='dark'?'☀️':'🌙';}
+function toggleTheme(){applyTheme(theme==='light'?'dark':'light');}
+applyTheme(theme);applyLang(lang);
+</script>
+</body>
+</html>

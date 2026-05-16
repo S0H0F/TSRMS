@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TSRMS</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--c-green:#006633;--c-green-dark:#004D26;--c-green-mid:#00853D;--c-green-pale:#EFF7F2;--c-gold:#C9A84C;--bg:#F2F5F3;--surface:#FFFFFF;--border:#D8E5DD;--text-primary:#112218;--text-secondary:#4A6858;--text-muted:#7A9888;--shadow:0 4px 32px rgba(0,102,51,0.12);}
+[data-theme="dark"]{--bg:#0A1610;--surface:#142218;--border:#2A4030;--text-primary:#E0EFE6;--text-secondary:#8AB898;--text-muted:#5A7A68;--shadow:0 4px 32px rgba(0,0,0,0.45);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit','Tajawal',sans-serif;background:var(--bg);color:var(--text-primary);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;transition:background .3s,color .3s;}
+[dir="rtl"]{font-family:'Tajawal','Outfit',sans-serif;}
+.ctrl{position:fixed;top:18px;right:18px;display:flex;gap:8px;z-index:100;}
+[dir="rtl"] .ctrl{right:auto;left:18px;}
+.cb{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:7px 14px;font-size:12px;font-weight:600;color:var(--text-primary);cursor:pointer;font-family:inherit;transition:all .2s;}
+.cb:hover{background:var(--c-green);color:#fff;border-color:var(--c-green);}
+.card{width:100%;max-width:400px;background:var(--surface);border-radius:22px;padding:36px;box-shadow:var(--shadow);border:1px solid var(--border);animation:fu .35s ease;}
+@keyframes fu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.logo{display:flex;justify-content:center;margin-bottom:26px;}
+.logo-icon{width:60px;height:60px;background:linear-gradient(135deg,var(--c-green-dark),var(--c-green-mid));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 4px 14px rgba(0,102,51,0.28);}
+.card-h{font-size:21px;font-weight:800;text-align:center;margin-bottom:4px;}
+.card-s{font-size:13px;color:var(--text-secondary);text-align:center;margin-bottom:24px;}
+.role-row{display:flex;gap:5px;margin-bottom:18px;}
+.rb{flex:1;padding:9px 4px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--text-secondary);font-size:11.5px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit;text-align:center;}
+.rb.active{background:var(--c-green-pale);border-color:var(--c-green);color:var(--c-green);}
+[data-theme="dark"] .rb.active{background:rgba(0,102,51,.18);}
+.ri{font-size:16px;display:block;margin-bottom:2px;}
+.mtabs{display:flex;gap:5px;background:var(--bg);border-radius:11px;padding:3px;border:1px solid var(--border);margin-bottom:20px;}
+.mt{flex:1;padding:9px 4px;border-radius:8px;border:none;background:transparent;color:var(--text-secondary);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:2px;transition:all .2s;}
+.mt.active{background:var(--surface);color:var(--c-green);box-shadow:0 2px 8px rgba(0,0,0,.07);}
+[data-theme="dark"] .mt.active{box-shadow:0 2px 8px rgba(0,0,0,.3);}
+.mt-ic{font-size:16px;}
+.panel{display:none;}.panel.active{display:block;}
+.fg{margin-bottom:14px;}
+.fl{display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:6px;letter-spacing:.4px;text-transform:uppercase;}
+.iw{position:relative;}
+.fi{width:100%;padding:12px 13px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text-primary);font-size:14px;font-family:inherit;outline:none;transition:all .2s;}
+.fi:focus{border-color:var(--c-green);box-shadow:0 0 0 3px rgba(0,102,51,.10);}
+.fi.err{border-color:#C0392B;}
+.fii{width:100%;padding:12px 40px 12px 13px;}
+[dir="rtl"] .fii{padding:12px 13px 12px 40px;}
+.eye{position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:14px;color:var(--text-muted);}
+[dir="rtl"] .eye{right:auto;left:11px;}
+.em{font-size:11px;color:#C0392B;margin-top:4px;display:none;}
+.em.show{display:block;}
+.foot{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.rem{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;color:var(--text-secondary);}
+.rem input{accent-color:var(--c-green);}
+.fgt{font-size:12px;color:var(--c-green);font-weight:600;text-decoration:none;}
+.lbtn{width:100%;padding:13px;background:linear-gradient(135deg,var(--c-green-dark),var(--c-green-mid));color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .2s;}
+.lbtn:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,102,51,.3);}
+.lbtn.ld{opacity:.7;pointer-events:none;}
+/* Nafath */
+.naf-btn{width:100%;padding:13px;background:var(--bg);color:var(--text-primary);border:2px solid var(--border);border-radius:10px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:14px;transition:all .2s;}
+.naf-btn:hover{border-color:var(--c-green);}
+.nlogo{width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,#006633,#00853D);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;}
+.nsteps{background:var(--bg);border-radius:10px;padding:12px 14px;border:1px solid var(--border);}
+.ns{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:12px;color:var(--text-secondary);}
+.ns:not(:last-child){border-bottom:1px solid var(--border);}
+.sn{width:20px;height:20px;border-radius:50%;background:var(--c-green);color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.waiting{display:none;text-align:center;padding:18px 0;}
+.waiting.show{display:block;}
+.spin{width:44px;height:44px;border:3px solid var(--border);border-top-color:var(--c-green);border-radius:50%;animation:sp 1s linear infinite;margin:0 auto 10px;}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="ctrl">
+  <button class="cb" onclick="toggleLang()" id="lang-btn">عربي</button>
+  <button class="cb" onclick="toggleTheme()" id="theme-btn">🌙</button>
+</div>
+<div class="card">
+  <div class="logo"><div class="logo-icon">🚆</div></div>
+  <div class="card-h" id="ch">Welcome Back</div>
+  <div class="card-s" id="cs">Sign in to continue</div>
+  <div class="role-row">
+    <button class="rb active" onclick="setRole('admin',this)"><span class="ri">🛡️</span><span id="rl-a">Admin</span></button>
+    <button class="rb" onclick="setRole('staff',this)"><span class="ri">🎫</span><span id="rl-s">Staff</span></button>
+    <button class="rb" onclick="setRole('passenger',this)"><span class="ri">👤</span><span id="rl-p">Passenger</span></button>
+  </div>
+  <div class="mtabs">
+    <button class="mt active" onclick="setMethod('email',this)"><span class="mt-ic">✉️</span><span id="mt-e">Email</span></button>
+    <button class="mt" onclick="setMethod('nafath',this)"><span class="mt-ic">🔐</span><span id="mt-n">Nafath</span></button>
+  </div>
+  <!-- Email -->
+  <div class="panel active" id="email-panel">
+    <form onsubmit="doEmail(event)">
+      <div class="fg"><label class="fl" id="le">Email</label><input type="email" class="fi" id="ie" placeholder="you@railwaysa.com" autocomplete="email"><div class="em" id="ee">Valid email required</div></div>
+      <div class="fg"><label class="fl" id="lp">Password</label><div class="iw"><input type="password" class="fi fii" id="ip" placeholder="••••••••" autocomplete="current-password"><button type="button" class="eye" onclick="tp()" id="eyeb">👁️</button></div><div class="em" id="ep">Min 6 characters</div></div>
+      <div class="foot"><label class="rem"><input type="checkbox"><span id="lr">Remember me</span></label><a href="#" class="fgt" id="lf">Forgot password?</a></div>
+      <button type="submit" class="lbtn" id="lbtn">Sign In</button>
+    </form>
+  </div>
+  <!-- Nafath -->
+  <div class="panel" id="nafath-panel">
+    <div id="nf">
+      <div class="fg"><label class="fl" id="lnid">National ID / Iqama</label><input type="text" class="fi" id="inid" placeholder="1XXXXXXXXX" maxlength="10" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')"><div class="em" id="enid">10-digit ID required</div></div>
+      <button type="button" class="naf-btn" onclick="doNafath()"><div class="nlogo">N</div><span id="nbtn">Sign in with Nafath</span></button>
+      <div class="nsteps">
+        <div class="ns"><div class="sn">1</div><span id="ns1">Enter your National ID</span></div>
+        <div class="ns"><div class="sn">2</div><span id="ns2">Open the Nafath app</span></div>
+        <div class="ns"><div class="sn">3</div><span id="ns3">Approve the request</span></div>
+        <div class="ns"><div class="sn">4</div><span id="ns4">Signed in automatically</span></div>
+      </div>
+    </div>
+    <div class="waiting" id="nw">
+      <div class="spin"></div>
+      <div style="font-size:13px;font-weight:600;color:var(--text-secondary);" id="wt">Waiting for Nafath…</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:5px;" id="wi"></div>
+      <button class="fgt" style="margin-top:14px;display:block;" onclick="cancelNaf()" id="wc">Cancel</button>
+    </div>
+  </div>
+</div>
+<script>
+const TX={en:{'ch':'Welcome Back','cs':'Sign in to continue','rl-a':'Admin','rl-s':'Staff','rl-p':'Passenger','mt-e':'Email','mt-n':'Nafath','le':'Email','lp':'Password','lr':'Remember me','lf':'Forgot password?','lbtn':'Sign In','lnid':'National ID / Iqama','nbtn':'Sign in with Nafath','ns1':'Enter your National ID','ns2':'Open the Nafath app','ns3':'Approve the request','ns4':'Signed in automatically','wt':'Waiting for Nafath…','wc':'Cancel','ee':'Valid email required','ep':'Min 6 characters','enid':'10-digit ID required','lang-btn':'عربي'},ar:{'ch':'مرحباً بعودتك','cs':'سجّل دخولك للمتابعة','rl-a':'مدير','rl-s':'موظف','rl-p':'راكب','mt-e':'بريد إلكتروني','mt-n':'نفاذ','le':'البريد الإلكتروني','lp':'كلمة المرور','lr':'تذكرني','lf':'نسيت كلمة المرور؟','lbtn':'تسجيل الدخول','lnid':'رقم الهوية / الإقامة','nbtn':'تسجيل الدخول بنفاذ','ns1':'أدخل رقم هويتك','ns2':'افتح تطبيق نفاذ','ns3':'وافق على الطلب','ns4':'سيتم تسجيل دخولك تلقائياً','wt':'في انتظار موافقة نفاذ…','wc':'إلغاء','ee':'بريد إلكتروني صحيح مطلوب','ep':'6 أحرف على الأقل','enid':'رقم هوية من 10 أرقام','lang-btn':'English'}};
+let lang=localStorage.getItem('rw-lang')||'en',theme=localStorage.getItem('rw-theme')||'light',role='admin',method='email',sp=false,nt=null;
+const homes={admin:'home-admin.html',staff:'home-staff.html',passenger:'home-passenger.html'};
+function applyLang(l){lang=l;localStorage.setItem('rw-lang',l);document.documentElement.setAttribute('lang',l);document.documentElement.setAttribute('dir',l==='ar'?'rtl':'ltr');for(const[id,v]of Object.entries(TX[l])){const el=document.getElementById(id);if(el)el.textContent=v;}}
+function toggleLang(){applyLang(lang==='en'?'ar':'en');}
+function applyTheme(t){theme=t;localStorage.setItem('rw-theme',t);document.documentElement.setAttribute('data-theme',t);document.getElementById('theme-btn').textContent=t==='dark'?'☀️':'🌙';}
+function toggleTheme(){applyTheme(theme==='light'?'dark':'light');}
+function setRole(r,b){role=r;document.querySelectorAll('.rb').forEach(x=>x.classList.remove('active'));b.classList.add('active');}
+function setMethod(m,b){method=m;document.querySelectorAll('.mt').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('email-panel').classList.toggle('active',m==='email');document.getElementById('nafath-panel').classList.toggle('active',m==='nafath');cancelNaf();}
+function tp(){sp=!sp;document.getElementById('ip').type=sp?'text':'password';document.getElementById('eyeb').textContent=sp?'🙈':'👁️';}
+function doEmail(e){
+  e.preventDefault();const email=document.getElementById('ie').value.trim(),pass=document.getElementById('ip').value;
+  let ok=true;document.querySelectorAll('.em').forEach(x=>x.classList.remove('show'));document.querySelectorAll('.fi').forEach(x=>x.classList.remove('err'));
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){document.getElementById('ee').classList.add('show');document.getElementById('ie').classList.add('err');ok=false;}
+  if(pass.length<6){document.getElementById('ep').classList.add('show');document.getElementById('ip').classList.add('err');ok=false;}
+  if(!ok)return;
+  const btn=document.getElementById('lbtn');btn.classList.add('ld');btn.textContent=lang==='ar'?'جاري التحقق…':'Signing in…';
+  setTimeout(()=>{localStorage.setItem('rw-user',JSON.stringify({email,role,method:'email',verified:false,phone:'05'+Math.floor(Math.random()*100000000).toString().padStart(8,'0')}));location.href=homes[role];},900);
+}
+function doNafath(){
+  const nid=document.getElementById('inid').value.trim();
+  document.getElementById('enid').classList.remove('show');document.getElementById('inid').classList.remove('err');
+  if(nid.length!==10){document.getElementById('enid').classList.add('show');document.getElementById('inid').classList.add('err');return;}
+  document.getElementById('nf').style.opacity='.3';document.getElementById('nf').style.pointerEvents='none';
+  document.getElementById('nw').classList.add('show');
+  document.getElementById('wi').textContent=(lang==='ar'?'الهوية: ':'ID: ')+nid;
+  nt=setTimeout(()=>{localStorage.setItem('rw-user',JSON.stringify({email:nid+'@nafath.sa',role,method:'nafath',national_id:nid,verified:true,phone:'05'+nid.substr(-8)}));location.href=homes[role];},4000);
+}
+function cancelNaf(){if(nt)clearTimeout(nt);const f=document.getElementById('nf');if(f){f.style.opacity='1';f.style.pointerEvents='auto';}const w=document.getElementById('nw');if(w)w.classList.remove('show');}
+applyTheme(theme);applyLang(lang);
+</script>
+</body>
+</html>
